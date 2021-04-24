@@ -25,6 +25,12 @@ onready var board_buttons := get_tree().get_root().find_node("BoardButtons", tru
 func _ready() -> void:
 	self.target_pos = board.get_pos(LogicManager.player.pos)
 	self.global_position = self.target_pos
+	LogicManager.connect("phase_change", self, "_phase_change")
+
+func _phase_change(new_phase : int) -> void:
+	if new_phase == Phases.PLAYER_MOVE:
+		self.state = STATE_SELECT_MOVE_INDEX
+		self.emit_signal("start_select_move_index")
 
 func _process(delta: float) -> void:
 	if self.state == STATE_WAIT:
@@ -51,9 +57,11 @@ func select_move_index(index : int) -> void:
 		board_button.ipos = legal_move
 		board_button.parent = self
 		board_buttons.add_child(board_button)
+	self.state = STATE_SELECT_MOVE_TARGET
 	emit_signal("start_select_move_target", index)
 
 func select_move_target(ipos : IntVec2) -> void:
 	self.move_ipos = ipos
 	self.target_pos = self.board.get_pos(self.move_ipos)
+	self.state = STATE_MAKE_MOVE
 	emit_signal("finish_select_move", move_index, move_ipos)
