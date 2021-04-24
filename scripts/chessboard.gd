@@ -10,13 +10,13 @@ func get_pos(ipos : IntVec2) -> Vector2:
 		return Vector2(NAN, NAN)
 	var origin := global_position
 	var x := (ipos.x + 0.5) * TILE_WIDTH + origin.x
-	var y := (ipos.y + 0.5) * TILE_HEIGHT + origin.y
+	var y := ((NUM_HEIGHT - ipos.y - 1) + 0.5) * TILE_HEIGHT + origin.y
 	return Vector2(x, y)
 
 func get_ipos(pos : Vector2) -> IntVec2:
 	var origin := global_position
 	var ix := int(floor((pos.x - origin.x) / TILE_WIDTH))
-	var iy := int(floor((pos.y - origin.y) / TILE_HEIGHT))
+	var iy := NUM_HEIGHT - int(floor((pos.y - origin.y) / TILE_HEIGHT)) - 1
 	if ix < 0 || ix >= NUM_WIDTH || iy < 0 || iy >= NUM_HEIGHT:
 		return IntVec2.new(-128, -128)
 	else:

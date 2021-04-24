@@ -10,7 +10,7 @@
 [node name="Controller" parent="." instance=ExtResource( 3 )]
 
 [node name="ChessBoard" parent="." instance=ExtResource( 1 )]
-position = Vector2( 87.6919, 12.9684 )
+position = Vector2( 92.4487, -75.033 )
 
 [node name="BoardButtons" type="Node2D" parent="."]
 
