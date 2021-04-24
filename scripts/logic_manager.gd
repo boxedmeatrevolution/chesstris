@@ -261,7 +261,12 @@ class PieceSorter:
 		
 
 func move_queens():
-	pass
+	var queens = []
+	for piece in pieces:
+		if piece.is_player == false && piece.type == MoveType.QUEEN:
+			queens.push_back(piece)
+	queens.sort_custom(PieceSorter, "sort_bottom_to_top")
+	
 	
 func move_pawns():
 	var pawns = []
