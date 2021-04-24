@@ -285,6 +285,30 @@ func move_queens():
 		if piece.type == MoveType.QUEEN:
 			queens.push_back(piece)
 	queens.sort_custom(PieceSorter, "sort_bottom_to_top")
+	for queen in queens:
+		var moves = get_legal_moves(queen.pos, MoveType.QUEEN, false)
+		var best_move = moves.pop_back()
+		var best_proximity = no_sqrt_dist_to_player(best_move)
+		var is_capture = false
+		for move in moves:
+			if board[move.x][move.y] == player_id:
+				best_move = move
+				is_capture = true
+				break
+			var proximity = no_sqrt_dist_to_player(move)
+			if proximity < best_proximity:
+				best_move = move
+				best_proximity = proximity
+		board[queen.pos.x][queen.pos.y] = null
+		queen.pos.x = best_move.x
+		queen.pos.y = best_move.y
+		board[queen.pos.x][queen.pos.y] = queen.id
+		emit_signal("move_enemy", queen.id, queen.pos)
+
+func no_sqrt_dist_to_player(pos : IntVec2):
+	var dx = player.pos.x - pos.x
+	var dy = player.pos.x - pos.x
+	return dx * dx + dy * dy
 
 func move_pawns():
 	var pawns = []
@@ -295,8 +319,7 @@ func move_pawns():
 	pawns.sort_custom(PieceSorter, "sort_bottom_to_top")
 	for pawn in pawns:
 		var moves = get_legal_moves(pawn.pos, MoveType.BAD_PAWN, false)
-		print(moves)
-		var best_move = moves.pop_front()
+		var best_move = moves.pop_back()
 		var is_capture = false 
 		for move in moves:
 			if board[move.x][move.y] == player_id:
