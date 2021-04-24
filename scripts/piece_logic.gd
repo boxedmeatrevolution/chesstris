@@ -5,7 +5,7 @@ class_name PieceLogic
 
 var id : int = -1
 var pos : IntVec2
-var type = MoveType.PAWN
+var type = MoveType.GOOD_PAWN
 var is_player : bool = false
 
 
