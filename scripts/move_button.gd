@@ -39,7 +39,8 @@ func _move_draw(type : int, slot : int) -> void:
 
 func _on_click(obj : Node, event : InputEvent, idx : int) -> void:
 	if self.active:
-		player.select_move_index(self.index)
+		if event is InputEventMouseButton && event.pressed:
+			player.select_move_index(self.index)
 
 func _on_mouse_enter() -> void:
 	if self.active:
