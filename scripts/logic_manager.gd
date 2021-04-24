@@ -189,7 +189,7 @@ func get_legal_moves(pos: IntVec2, type: int, is_player: bool) -> Array:
 			IntVec2.new(pos.x, pos.y+1), IntVec2.new(pos.x+1, pos.y+1),
 			IntVec2.new(pos.x+1, pos.y), IntVec2.new(pos.x+1, pos.y-1),
 			IntVec2.new(pos.x, pos.y-1), IntVec2.new(pos.x-1, pos.y-1),
-			IntVec2.new(pos.x-1, pos.y), IntVec2.new(pos.x-1, pos.y-1)
+			IntVec2.new(pos.x-1, pos.y), IntVec2.new(pos.x-1, pos.y+1)
 		]
 		for move in potentialMoves:
 			if is_on_play_area_and_attackable(move, is_player):
@@ -279,7 +279,6 @@ class PieceSorter:
 		elif a.pos.y == b.pos.y && a.pos.x < b.pos.x:
 			return true
 		return false 
-		
 
 func move_queens():
 	var queens = []
@@ -287,8 +286,7 @@ func move_queens():
 		if piece.is_player == false && piece.type == MoveType.QUEEN:
 			queens.push_back(piece)
 	queens.sort_custom(PieceSorter, "sort_bottom_to_top")
-	
-	
+
 func move_pawns():
 	var pawns = []
 	for piece in pieces:
