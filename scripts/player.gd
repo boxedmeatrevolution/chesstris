@@ -1,7 +1,5 @@
 extends Node2D
 
-# onready var _logic_manager : LogicManager
-
 const ChessBoard := preload("res://scripts/chessboard.gd")
 
 const PLACE_TIME := 0.1

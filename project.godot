@@ -13,9 +13,27 @@ _global_script_classes=[ {
 "class": "IntVec2",
 "language": "GDScript",
 "path": "res://scripts/intvec2.gd"
+}, {
+"base": "Reference",
+"class": "MoveType",
+"language": "GDScript",
+"path": "res://scripts/move_type.gd"
+}, {
+"base": "Reference",
+"class": "Phases",
+"language": "GDScript",
+"path": "res://scripts/phases.gd"
+}, {
+"base": "Object",
+"class": "PieceLogic",
+"language": "GDScript",
+"path": "res://scripts/piece_logic.gd"
 } ]
 _global_script_class_icons={
-"IntVec2": ""
+"IntVec2": "",
+"MoveType": "",
+"Phases": "",
+"PieceLogic": ""
 }
 
 [application]
