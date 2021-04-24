@@ -51,8 +51,17 @@ func reset():
 	board = [] # 2D array, with piece IDs in occupied spaces, null if empty
 	
 	# Init the moves
+	var starting_moves = [
+		MoveType.KING,
+		MoveType.QUEEN,
+		MoveType.BISHOP,
+		MoveType.ROOK,
+		MoveType.KNIGHT
+	]
 	for i in range(0, moves.size()):
-		moves[i] = get_random_player_move()
+		var move_idx = randi() % starting_moves.size()
+		moves[i] = starting_moves[move_idx]
+		starting_moves.remove(move_idx)
 	# Init the board
 	for x in range(0, WIDTH):
 		var column = []
