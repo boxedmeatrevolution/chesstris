@@ -34,6 +34,9 @@ signal phase_change(new_phase) # Phases
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	randomize()
+	# Init the moves
+	for i in range(0, moves.size()):
+		moves[i] = get_random_player_move()
 	# Init the board
 	for x in range(0, WIDTH):
 		var column = []
