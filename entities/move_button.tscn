@@ -17,8 +17,13 @@ hframes = 6
 [node name="OutlineSprite" type="Sprite" parent="."]
 visible = false
 texture = ExtResource( 2 )
+hframes = 3
 
 [node name="Area2D" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource( 1 )
+
+[connection signal="input_event" from="Area2D" to="." method="_on_click"]
+[connection signal="mouse_entered" from="Area2D" to="." method="_on_mouse_enter"]
+[connection signal="mouse_exited" from="Area2D" to="." method="_on_mouse_leave"]

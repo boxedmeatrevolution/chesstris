@@ -17,3 +17,6 @@ func sub(other : IntVec2) -> IntVec2:
 
 func scale(other : int) -> IntVec2:
 	return get_script().new(other * self.x, other * self.y)
+
+func equals(other : IntVec2) -> bool:
+	return self.x == other.x && self.y == other.y

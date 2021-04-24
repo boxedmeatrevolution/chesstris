@@ -11,5 +11,9 @@
 [node name="ChessBoard" parent="." instance=ExtResource( 1 )]
 position = Vector2( 87.6919, 12.9684 )
 
+[node name="BoardButtons" type="Node2D" parent="."]
+
+[node name="Pawns" type="Node2D" parent="."]
+
 [node name="Player" parent="." instance=ExtResource( 2 )]
 position = Vector2( 860.677, 142.592 )
