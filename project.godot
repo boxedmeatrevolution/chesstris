@@ -8,10 +8,29 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "Object",
+"class": "IntVec2",
+"language": "GDScript",
+"path": "res://scripts/intvec2.gd"
+} ]
+_global_script_class_icons={
+"IntVec2": ""
+}
+
 [application]
 
 config/name="Chesstris"
+run/main_scene="res://levels/main.tscn"
 config/icon="res://icon.png"
+
+[autoload]
+
+LogicManager="*res://scripts/logic_manager.gd"
+
+[display]
+
+window/size/width=960
 
 [physics]
 
