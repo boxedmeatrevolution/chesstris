@@ -307,7 +307,7 @@ func move_queens():
 
 func no_sqrt_dist_to_player(pos : IntVec2):
 	var dx = player.pos.x - pos.x
-	var dy = player.pos.x - pos.x
+	var dy = player.pos.y - pos.y
 	return dx * dx + dy * dy
 
 func move_pawns():
@@ -339,7 +339,7 @@ func move_pawns():
 			emit_signal("pawn_promotion", pawn.id, pawn.pos)
 
 func spawn_enemies():
-	if turn % 2 == 0:
+	if turn % 2 == 0 && enemy_ids.size() < 2:
 		var pawn = PieceLogic.new({
 			'id': get_next_id(),
 			'is_player': false,
