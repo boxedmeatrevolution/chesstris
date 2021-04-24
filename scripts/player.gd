@@ -45,7 +45,7 @@ func select_move_index(index : int) -> void:
 	self.move_index = index
 	# Create board buttons.
 	var move : int = LogicManager.moves[self.move_index]
-	var legal_moves := LogicManager.get_legal_moves(LogicManager.player.pos, move)
+	var legal_moves := LogicManager.get_legal_moves(LogicManager.player.pos, move, true)
 	for legal_move in legal_moves:
 		var board_button := BoardButtonScene.instance()
 		board_button.ipos = legal_move
