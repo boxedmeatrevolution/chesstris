@@ -2,7 +2,7 @@ extends Node2D
 
 const Player := preload("res://scripts/player.gd")
 
-var index := 0
+export var index := 0
 var active := false
 onready var player : Player = get_tree().get_root().find_node("Player", true, false)
 onready var move_sprite := $MoveSprite
