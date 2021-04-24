@@ -8,6 +8,7 @@ var next_object_id : int = 1
 
 var phase : int = Phases.PLAYER_MOVE
 var level : int = 1
+var turn : int = 0
 var moves : Array = [MoveType.GOOD_PAWN, MoveType.GOOD_PAWN, MoveType.GOOD_PAWN]
 var next_move : int = MoveType.GOOD_PAWN
 var enemy_ids : Array = [] # list of ids
@@ -32,6 +33,7 @@ signal phase_change(new_phase) # Phases
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	randomize()
 	# Init the board
 	for x in range(0, WIDTH):
 		var column = []
@@ -40,8 +42,9 @@ func _ready():
 		board.push_back(column)
 	# Add player to board
 	board[player.pos.x][player.pos.y] = player_id
-	
-	
+
+
+# Returns unique ids for pieces 
 func get_next_id():
 	var next = next_object_id
 	next_object_id = next_object_id + 1
@@ -49,25 +52,87 @@ func get_next_id():
 	
 
 func increment_phase():
-	
-	pass	
+	if phase == Phases.PLAYER_MOVE:
+		phase = Phases.QUEEN_MOVE
+	elif phase == Phases.QUEEN_MOVE:
+		phase = Phases.PAWN_MOVE
+	elif phase == Phases.PAWN_MOVE:
+		phase = Phases.SPAWN_ENEMY
+	elif phase == Phases.SPAWN_ENEMY:
+		phase = Phases.PLAYER_MOVE
+	do_phase()
 
+func do_phase():
+	if phase == Phases.PLAYER_MOVE:
+		pass
+	elif phase == Phases.QUEEN_MOVE:
+		move_queens()
+	elif phase == Phases.PAWN_MOVE:
+		move_pawns()
+	elif phase == Phases.SPAWN_ENEMY:
+		spawn_enemies()
+		turn = turn + 1
 
-# Increments the phase if the move is legal
+# Increments the phase and moves the player if the move is legal
+# Expects:
+#   int slot     which slot the player is using to move (corresponds to a piece type)
+#   IntVec2 pos  where the player wants to move
+# Returns:
+#   true if the move succeeded, false otherwise 
 func try_player_move(slot: int, pos: IntVec2) -> bool:
 	var type = moves[slot]
 	var legal_player_moves = get_legal_moves(pos, type, true)
 	for move in legal_player_moves:
 		if move.equals(pos):
+			# Move the player
+			board[player.pos.x][player.pos.y] = null
+			player.pos.x = pos.x
+			player.pos.y = pos.y
+			var old_tenant = board[pos.x][pos.y]
+			if old_tenant != null:
+				# A piece was captured!
+				kill_enemy_piece(old_tenant)
+			board[pos.x][pos.y] = player.id
+			moves[slot] = get_random_player_move()
+			emit_signal("move_draw", moves[slot], slot)
+			increment_phase()
 			return true
 	return false
 
 
-# Type is a MoveType
+# Returns a random MoveType for the player
+func get_random_player_move() -> int:
+	var bucket = [
+		MoveType.GOOD_PAWN, MoveType.KNIGHT, 
+		MoveType.BISHOP, MoveType.ROOK,
+		MoveType.QUEEN, MoveType.KING
+	]
+	var idx = randi() % bucket.size()
+	return bucket[idx]
+
+# Deletes an enemy piece from the game
+# Expects:
+#   int id  is the id of an enemy piece
+func kill_enemy_piece(id : int):
+	var index = enemy_ids.find(id)
+	if index != -1:
+		enemy_ids.remove(index)
+		var pos = pieces[id].pos
+		board[pos.x][pos.y] = null
+		pieces.erase(id)
+		emit_signal("enemy_death", id, pos)
+
+
+# Returns an array of IntVec2, representing all legal moves. 
+# Currently, "not moving" is always a legal move
+# Expects:
+#   IntVec2 pos     where you want to go
+#   MoveType type   the type of piece trying to move
+#   bool is_player  true if the piece is the player piece
 # Returns: 
 #   array of IntVec2
 func get_legal_moves(pos: IntVec2, type: int, is_player: bool) -> Array:
-	var moves = []
+	var moves = [IntVec2.new(pos.x, pos.y)]  #staying still is always legal?
 	if type == MoveType.BAD_PAWN:
 		var move = IntVec2.new(pos.x, pos.y - 1)
 		if is_on_board_and_empty(move):
@@ -170,18 +235,71 @@ func is_on_play_area(pos: IntVec2) -> bool:
 # Adds a piece to the board at the given location.
 # Requires: the pos is not occupied
 # Inputs:
-#   IntVec2 pos    can be anywhere on or above the board
+#   IntVec2 pos    can be anywhere on the board
 #   MoveType type  
 # Returns:
-#	String         the piece ID
+#	int            the piece ID
 func add_enemy_piece(pos: IntVec2, type: int):
-	#enemyPieces.push_back()
 	var id = get_next_id()
+	enemy_ids.push_back(id)
+	pieces[id] = PieceLogic.new({
+		'id': id,
+		'is_player': false,
+		'pos': pos,
+		'type': type
+	})
+	board[pos.x][pos.y] = id
 	emit_signal("spawn_enemy", id, pos)
-	pass
 
-func move_enemy_pieces():
-	# First queens move
+class PieceSorter:
+	static func sort_bottom_to_top(a: PieceLogic, b: PieceLogic):
+		if a.pos.y < b.pos.y:
+			return true
+		elif a.pos.y == b.pos.y && a.pos.x < b.pos.x:
+			return true
+		return false 
+		
+
+func move_queens():
+	pass
 	
-	# Then pawns
-	pass # Each piece wants to move somewhere, need to handle conflicts
+func move_pawns():
+	var pawns = []
+	for piece in pieces:
+		if piece.is_player == false && piece.type == MoveType.BAD_PAWN:
+			pawns.push_back(piece)
+	pawns.sort_custom(PieceSorter, "sort_bottom_to_top")
+	for pawn in pawns:
+		var moves = get_legal_moves(pawn.pos, MoveType.BAD_PAWN, false)
+		var best_move = moves.pop_front()
+		var is_capture = false 
+		for move in moves:
+			if board[move.x][move.y] == player_id:
+				best_move = move
+				is_capture = true
+				break
+			elif move.y < best_move.y:
+				best_move = move #prefer moving down to staying still
+		board[pawn.pos.x][pawn.pos.y] = null
+		pawn.pos.x = best_move.x
+		pawn.pos.y = best_move.y
+		board[pawn.pos.x][pawn.pos.y] = pawn.id
+		emit_signal("move_enemy", pawn.id, pawn.pos)
+		if pawn.pos.y == 0:
+			# Promote that boiiiii!
+			pawn.type = MoveType.QUEEN
+			emit_signal("pawn_promotion", pawn.id, pawn.pos)
+
+func spawn_enemies():
+	if turn % 2 == 0:
+		var pawn = PieceLogic.new({
+			'id': get_next_id(),
+			'is_player': false,
+			'pos': IntVec2.new(randi() % WIDTH, WIDTH),
+			'type': MoveType.BAD_PAWN
+		})
+		if (is_on_board_and_empty(pawn.pos)):
+			board[pawn.pos.x][pawn.pos.y] = pawn.id
+			enemy_ids.push_back(pawn.id)
+			pieces[pawn.id] = pawn
+			emit_signal("spawn_enemy", pawn.id, pawn.pos)
