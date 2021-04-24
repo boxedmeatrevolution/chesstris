@@ -29,7 +29,7 @@ func _process(delta : float) -> void:
 		else:
 			self.global_position = self.target_pos + delta_pos * exp(-delta / PLACE_TIME)
 
-func _logic_move(idx : int, old_ipos : IntVec2, ipos : IntVec2) -> void:
+func _logic_move(idx : int, ipos : IntVec2) -> void:
 	if idx == self.idx:
 		self.target_pos = board.get_pos(ipos)
 

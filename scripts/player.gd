@@ -23,13 +23,11 @@ onready var board : ChessBoard = get_tree().get_root().find_node("ChessBoard", t
 onready var board_buttons := get_tree().get_root().find_node("BoardButtons", true, false)
 
 func _ready() -> void:
-	print("player")
 	self.target_pos = board.get_pos(LogicManager.player.pos)
 	self.global_position = self.target_pos
 	LogicManager.connect("phase_change", self, "_phase_change")
 
 func _phase_change(new_phase : int) -> void:
-	print("hey")
 	if new_phase == Phases.PLAYER_MOVE:
 		self.state = STATE_SELECT_MOVE_INDEX
 		self.emit_signal("start_select_move_index")
@@ -41,13 +39,14 @@ func _process(delta: float) -> void:
 		if self.target_pos != self.global_position:
 			var delta_pos := self.global_position - self.target_pos
 			if delta_pos.length_squared() <= 10:
-				if not LogicManager.try_player_move(move_index, move_ipos):
-					print("Somehow inputted an invalid move")
-					get_tree().quit()
 				self.global_position = self.target_pos
-				self.state = STATE_WAIT
 			else:
 				self.global_position = self.target_pos + delta_pos * exp(-delta / PLACE_TIME)
+		else:
+			if not LogicManager.try_player_move(move_index, move_ipos):
+				print("Somehow inputted an invalid move")
+				get_tree().quit()
+			self.state = STATE_WAIT
 
 func select_move_index(index : int) -> void:
 	self.move_index = index

@@ -1,8 +1,8 @@
 extends Node
 
 const WIDTH : int = 6
-const HEIGHT : int = 9
-const SPAWN_ROWS : int = 3 # top 3 rows are for spawning pieces
+const HEIGHT : int = 7
+const SPAWN_ROWS : int = 1 # top 3 rows are for spawning pieces
 
 var next_object_id : int
 
@@ -81,6 +81,7 @@ func increment_phase():
 	elif phase == Phases.SPAWN_ENEMY:
 		phase = Phases.PLAYER_MOVE
 	emit_signal("phase_change", phase)
+	print("The phase is %s" % phase)
 	do_phase()
 
 func do_phase():
@@ -103,8 +104,8 @@ func do_phase():
 func try_player_move(slot: int, pos: IntVec2) -> bool:
 	var type = moves[slot]
 	var legal_player_moves = get_legal_moves(pos, type, true)
-	for move in legal_player_moves:
-		if move.equals(pos):
+	for legal_move in legal_player_moves:
+		if pos.equals(legal_move):
 			# Move the player
 			board[player.pos.x][player.pos.y] = null
 			player.pos.x = pos.x
@@ -117,7 +118,9 @@ func try_player_move(slot: int, pos: IntVec2) -> bool:
 			moves[slot] = get_random_player_move()
 			emit_signal("move_draw", moves[slot], slot)
 			increment_phase()
+			print("making legal move")
 			return true
+	print("illegal")
 	return false
 
 
@@ -164,7 +167,7 @@ func get_legal_moves(pos: IntVec2, type: int, is_player: bool) -> Array:
 		for attack in attacks:
 			if is_on_play_area_and_attackable(attack, is_player):
 				moves.push_back(move)
-	elif type == MoveType.GOOD_PAWN:
+	if type == MoveType.GOOD_PAWN:
 		var move = IntVec2.new(pos.x, pos.y + 1)
 		if is_on_play_area_and_empty(move):
 			moves.push_back(IntVec2.new(pos.x, pos.y + 1))
@@ -174,7 +177,7 @@ func get_legal_moves(pos: IntVec2, type: int, is_player: bool) -> Array:
 		for attack in attacks:
 			if is_on_play_area_and_attackable(attack, is_player):
 				moves.push_back(move)
-	elif type == MoveType.KNIGHT:
+	if type == MoveType.KNIGHT:
 		var potentialMoves = [
 			IntVec2.new(pos.x+1, pos.y+2), IntVec2.new(pos.x+2,pos.y+1),
 			IntVec2.new(pos.x-1, pos.y+2), IntVec2.new(pos.x-2,pos.y+1),
@@ -184,7 +187,7 @@ func get_legal_moves(pos: IntVec2, type: int, is_player: bool) -> Array:
 		for move in potentialMoves:
 			if is_on_play_area_and_attackable(move, is_player):
 				moves.push_back(move)
-	elif type == MoveType.KING:
+	if type == MoveType.KING:
 		var potentialMoves = [
 			IntVec2.new(pos.x, pos.y+1), IntVec2.new(pos.x+1, pos.y+1),
 			IntVec2.new(pos.x+1, pos.y), IntVec2.new(pos.x+1, pos.y-1),
@@ -194,7 +197,7 @@ func get_legal_moves(pos: IntVec2, type: int, is_player: bool) -> Array:
 		for move in potentialMoves:
 			if is_on_play_area_and_attackable(move, is_player):
 				moves.push_back(move)
-	elif type == MoveType.ROOK || type == MoveType.QUEEN:
+	if type == MoveType.ROOK || type == MoveType.QUEEN:
 		var directions = [
 			IntVec2.new(1,0), IntVec2.new(0,1), IntVec2.new(-1,0), IntVec2.new(0,-1)
 		]
@@ -209,7 +212,7 @@ func get_legal_moves(pos: IntVec2, type: int, is_player: bool) -> Array:
 					break
 				else:
 					break
-	elif type == MoveType.BISHOP || type == MoveType.QUEEN:
+	if type == MoveType.BISHOP || type == MoveType.QUEEN:
 		var directions = [
 			IntVec2.new(1,1), IntVec2.new(1,-1), IntVec2.new(-1,1),IntVec2.new(-1,-1)
 		]
@@ -224,9 +227,6 @@ func get_legal_moves(pos: IntVec2, type: int, is_player: bool) -> Array:
 					break
 				else:
 					break
-	else:
-		print("Called get_legal_moves with invalid type %s" % type)
-		get_tree().quit()
 	return moves
 
 func is_on_board_and_empty(pos: IntVec2) -> bool:
@@ -282,14 +282,16 @@ class PieceSorter:
 
 func move_queens():
 	var queens = []
-	for piece in pieces:
-		if piece.is_player == false && piece.type == MoveType.QUEEN:
+	for id in enemy_ids:
+		var piece = pieces[id]
+		if piece.type == MoveType.QUEEN:
 			queens.push_back(piece)
 	queens.sort_custom(PieceSorter, "sort_bottom_to_top")
 
 func move_pawns():
 	var pawns = []
-	for piece in pieces:
+	for id in enemy_ids:
+		var piece = pieces[id]
 		if piece.is_player == false && piece.type == MoveType.BAD_PAWN:
 			pawns.push_back(piece)
 	pawns.sort_custom(PieceSorter, "sort_bottom_to_top")

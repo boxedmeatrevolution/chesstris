@@ -10,7 +10,6 @@ const TIME_PER_PHASE := 0.4
 var phase_timer := 0.0
 
 func _ready() -> void:
-	print("controller")
 	LogicManager.connect("spawn_enemy", self, "_logic_spawn")
 	LogicManager.reset()
 
@@ -30,4 +29,5 @@ func _logic_spawn(idx : int, ipos : IntVec2) -> void:
 	pawn.ipos = ipos
 	pawn.target_pos = board.get_pos(ipos)
 	self.pawns.add_child(pawn)
+	#print(pawn.idx, " ", pawn.ipos.x, " ", pawn.ipos.y, " ", pawn.target_pos.x, " ", pawn.target_pos.y)
 	
