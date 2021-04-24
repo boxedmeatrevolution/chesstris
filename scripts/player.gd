@@ -23,11 +23,13 @@ onready var board : ChessBoard = get_tree().get_root().find_node("ChessBoard", t
 onready var board_buttons := get_tree().get_root().find_node("BoardButtons", true, false)
 
 func _ready() -> void:
+	print("player")
 	self.target_pos = board.get_pos(LogicManager.player.pos)
 	self.global_position = self.target_pos
 	LogicManager.connect("phase_change", self, "_phase_change")
 
 func _phase_change(new_phase : int) -> void:
+	print("hey")
 	if new_phase == Phases.PLAYER_MOVE:
 		self.state = STATE_SELECT_MOVE_INDEX
 		self.emit_signal("start_select_move_index")

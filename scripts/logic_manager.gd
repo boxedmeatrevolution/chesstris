@@ -4,25 +4,18 @@ const WIDTH : int = 6
 const HEIGHT : int = 9
 const SPAWN_ROWS : int = 3 # top 3 rows are for spawning pieces
 
-var next_object_id : int = 1
+var next_object_id : int
 
-var phase : int = Phases.PLAYER_MOVE
-var level : int = 1
-var turn : int = 0
-var moves : Array = [MoveType.GOOD_PAWN, MoveType.GOOD_PAWN, MoveType.GOOD_PAWN]
-var next_move : int = MoveType.GOOD_PAWN
-var enemy_ids : Array = [] # list of ids
-var player_id : int = 0
-var player : PieceLogic = PieceLogic.new({
-	'id': player_id,
-	'is_player': true,
-	'pos': IntVec2.new(1,1),
-	'type': MoveType.GOOD_PAWN
-})
-var pieces = {  # keys are piece ids
-	player_id: player
-}
-var board : Array = [] # 2D array, with piece IDs in occupied spaces, null if empty
+var phase : int
+var level : int
+var turn : int 
+var moves : Array
+var next_move : int
+var enemy_ids : Array # list of ids
+var player_id : int
+var player : PieceLogic
+var pieces  # dictionary whose keys are piece ids
+var board : Array # 2D array, with piece IDs in occupied spaces, null if empty
 
 signal spawn_enemy(id, pos) # int and IntVec2
 signal move_enemy(id, new_pos) # int and IntVec2
@@ -34,6 +27,29 @@ signal phase_change(new_phase) # Phases
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	randomize()
+
+# Completely reset EVERYTHING
+func reset():
+	# Variables
+	next_object_id = 1
+	phase = Phases.PRE_GAME
+	level  = 1
+	turn  = 0
+	moves = [MoveType.GOOD_PAWN, MoveType.GOOD_PAWN, MoveType.GOOD_PAWN]
+	next_move = MoveType.GOOD_PAWN
+	enemy_ids = [] # list of ids
+	player_id = 0
+	player = PieceLogic.new({
+		'id': player_id,
+		'is_player': true,
+		'pos': IntVec2.new(1,1),
+		'type': MoveType.GOOD_PAWN
+	})
+	pieces = {  # keys are piece ids
+		player_id: player
+	}
+	board = [] # 2D array, with piece IDs in occupied spaces, null if empty
+	
 	# Init the moves
 	for i in range(0, moves.size()):
 		moves[i] = get_random_player_move()
@@ -46,7 +62,6 @@ func _ready():
 	# Add player to board
 	board[player.pos.x][player.pos.y] = player_id
 
-
 # Returns unique ids for pieces 
 func get_next_id():
 	var next = next_object_id
@@ -55,7 +70,9 @@ func get_next_id():
 	
 
 func increment_phase():
-	if phase == Phases.PLAYER_MOVE:
+	if phase == Phases.PRE_GAME:
+		phase = Phases.PLAYER_MOVE
+	elif phase == Phases.PLAYER_MOVE:
 		phase = Phases.QUEEN_MOVE
 	elif phase == Phases.QUEEN_MOVE:
 		phase = Phases.PAWN_MOVE
@@ -63,6 +80,7 @@ func increment_phase():
 		phase = Phases.SPAWN_ENEMY
 	elif phase == Phases.SPAWN_ENEMY:
 		phase = Phases.PLAYER_MOVE
+	emit_signal("phase_change", phase)
 	do_phase()
 
 func do_phase():

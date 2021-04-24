@@ -10,14 +10,19 @@ const TIME_PER_PHASE := 0.4
 var phase_timer := 0.0
 
 func _ready() -> void:
+	print("controller")
 	LogicManager.connect("spawn_enemy", self, "_logic_spawn")
+	LogicManager.reset()
 
 func _process(delta : float) -> void:
-	if LogicManager.phase != Phases.PLAYER_MOVE:
+	if LogicManager.phase == Phases.PRE_GAME: 
+		LogicManager.increment_phase()
+	elif LogicManager.phase != Phases.PLAYER_MOVE:
 		phase_timer += delta
 		if phase_timer > TIME_PER_PHASE:
 			LogicManager.increment_phase()
 			phase_timer = 0.0
+
 
 func _logic_spawn(idx : int, ipos : IntVec2) -> void:
 	var pawn := PawnScene.instance()

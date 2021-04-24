@@ -15,10 +15,12 @@ func _convert_move_sprite_index(idx : int) -> int:
 		return 1
 	elif idx == MoveType.BISHOP:
 		return 2
-	elif idx == MoveType.QUEEN:
+	elif idx == MoveType.ROOK:
 		return 3
-	elif idx == MoveType.KING:
+	elif idx == MoveType.QUEEN:
 		return 4
+	elif idx == MoveType.KING:
+		return 5
 	else:
 		print("Invalid move index")
 		get_tree().quit()
