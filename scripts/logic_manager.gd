@@ -118,9 +118,7 @@ func try_player_move(slot: int, pos: IntVec2) -> bool:
 			moves[slot] = get_random_player_move()
 			emit_signal("move_draw", moves[slot], slot)
 			increment_phase()
-			print("making legal move")
 			return true
-	print("illegal")
 	return false
 
 
@@ -165,8 +163,8 @@ func get_legal_moves(pos: IntVec2, type: int, is_player: bool) -> Array:
 			IntVec2.new(pos.x-1, pos.y-1), IntVec2.new(pos.x+1, pos.y-1)
 		]
 		for attack in attacks:
-			if is_on_play_area_and_attackable(attack, is_player):
-				moves.push_back(move)
+			if is_on_play_area_and_attackable(attack, is_player) && not is_on_play_area_and_empty(attack):
+				moves.push_back(attack)
 	if type == MoveType.GOOD_PAWN:
 		var move = IntVec2.new(pos.x, pos.y + 1)
 		if is_on_play_area_and_empty(move):
@@ -175,8 +173,8 @@ func get_legal_moves(pos: IntVec2, type: int, is_player: bool) -> Array:
 			IntVec2.new(pos.x-1, pos.y+1), IntVec2.new(pos.x+1, pos.y+1)
 		]
 		for attack in attacks:
-			if is_on_play_area_and_attackable(attack, is_player):
-				moves.push_back(move)
+			if is_on_play_area_and_attackable(attack, is_player) && not is_on_play_area_and_empty(attack):
+				moves.push_back(attack)
 	if type == MoveType.KNIGHT:
 		var potentialMoves = [
 			IntVec2.new(pos.x+1, pos.y+2), IntVec2.new(pos.x+2,pos.y+1),
@@ -297,6 +295,7 @@ func move_pawns():
 	pawns.sort_custom(PieceSorter, "sort_bottom_to_top")
 	for pawn in pawns:
 		var moves = get_legal_moves(pawn.pos, MoveType.BAD_PAWN, false)
+		print(moves)
 		var best_move = moves.pop_front()
 		var is_capture = false 
 		for move in moves:

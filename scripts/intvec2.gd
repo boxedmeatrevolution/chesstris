@@ -9,6 +9,9 @@ func _init(x_ : int, y_ : int) -> void:
 	self.x = x_
 	self.y = y_
 
+func _to_string():
+	return "(%s, %s)" % [x, y]
+
 func add(other : IntVec2) -> IntVec2:
 	return get_script().new(other.x + self.x, other.y + self.y)
 
