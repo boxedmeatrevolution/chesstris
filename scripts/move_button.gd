@@ -36,11 +36,14 @@ func _ready() -> void:
 func _move_draw(type : int, slot : int) -> void:
 	if self.index == slot:
 		self.move_sprite.frame = _convert_move_sprite_index(LogicManager.moves[self.index])
+	self.outline_sprite.visible = false
 
 func _on_click(obj : Node, event : InputEvent, idx : int) -> void:
-	if self.active:
-		if event is InputEventMouseButton && event.pressed:
+	if event is InputEventMouseButton && event.pressed && event.button_index == BUTTON_LEFT:
+		if self.active:
 			player.select_move_index(self.index)
+		elif player.state == player.STATE_SELECT_MOVE_TARGET:
+			player.undo_select_move_index()
 
 func _on_mouse_enter() -> void:
 	if self.active:

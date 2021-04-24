@@ -48,6 +48,11 @@ func _process(delta: float) -> void:
 				get_tree().quit()
 			self.state = STATE_WAIT
 
+func _input(event : InputEvent) -> void:
+	if event is InputEventMouseButton && event.pressed && event.button_index == BUTTON_RIGHT:
+		if self.state == STATE_SELECT_MOVE_TARGET:
+			self.undo_select_move_index()
+
 func select_move_index(index : int) -> void:
 	self.move_index = index
 	# Create board buttons.
@@ -60,6 +65,10 @@ func select_move_index(index : int) -> void:
 		board_buttons.add_child(board_button)
 	self.state = STATE_SELECT_MOVE_TARGET
 	emit_signal("start_select_move_target", index)
+
+func undo_select_move_index() -> void:
+	self.state = STATE_SELECT_MOVE_INDEX
+	emit_signal("start_select_move_index")
 
 func select_move_target(ipos : IntVec2) -> void:
 	self.move_ipos = ipos

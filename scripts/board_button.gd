@@ -21,7 +21,7 @@ func _process(delta : float) -> void:
 			queue_free()
 
 func _on_click(obj : Node, event : InputEvent, idx : int) -> void:
-	if event is InputEventMouseButton && event.pressed:
+	if event is InputEventMouseButton && event.pressed && event.button_index == BUTTON_LEFT:
 		self.parent.select_move_target(self.ipos)
 
 func _on_mouse_enter() -> void:

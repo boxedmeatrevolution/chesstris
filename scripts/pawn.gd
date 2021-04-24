@@ -17,6 +17,7 @@ onready var board : ChessBoard = get_tree().get_root().find_node("ChessBoard", t
 
 func _ready() -> void:
 	self.target_pos = board.get_pos(self.ipos)
+	self.global_position = self.target_pos
 	LogicManager.connect("move_enemy", self, "_logic_move")
 	LogicManager.connect("enemy_death", self, "_logic_death")
 	LogicManager.connect("pawn_promotion", self, "_logic_promotion")
