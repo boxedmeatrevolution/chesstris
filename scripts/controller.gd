@@ -10,6 +10,7 @@ onready var buttons := get_tree().get_root().find_node("Buttons", true, false)
 
 const TIME_PER_PHASE := 0.2
 const GAME_OVER_TIME := 2.0
+const YOU_WIN_TIME := 2.0
 
 var phase_timer := 0.0
 
@@ -25,6 +26,11 @@ func _process(delta : float) -> void:
 		phase_timer += delta
 		if phase_timer > GAME_OVER_TIME:
 			get_tree().change_scene("res://levels/gameover.tscn")
+	elif LogicManager.phase == Phases.YOU_WIN:
+		phase_timer += delta
+		if phase_timer > YOU_WIN_TIME:
+			print("going gonign ignonsdng")
+			get_tree().change_scene("res://levels/youwin.tscn")
 	elif LogicManager.phase != Phases.PLAYER_MOVE:
 		phase_timer += delta
 		if phase_timer > TIME_PER_PHASE:
