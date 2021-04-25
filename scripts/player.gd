@@ -21,6 +21,7 @@ var move_index := 0
 var move_ipos := IntVec2.new(0, 0)
 onready var board : ChessBoard = get_tree().get_root().find_node("ChessBoard", true, false)
 onready var board_buttons := get_tree().get_root().find_node("BoardButtons", true, false)
+onready var move_target_click_stream := $MoveTargetClickStream
 
 func _ready() -> void:
 	self.target_pos = board.get_pos(LogicManager.player.pos)
