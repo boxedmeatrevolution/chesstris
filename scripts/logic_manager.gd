@@ -54,7 +54,7 @@ func reset():
 	# Variables
 	_next_object_id = 1
 	phase = Phases.PRE_GAME
-	level = 1
+	level = 0
 	turn  = 0
 	moves = [MoveType.GOOD_PAWN, MoveType.GOOD_PAWN, MoveType.GOOD_PAWN]
 	next_move = MoveType.GOOD_PAWN
