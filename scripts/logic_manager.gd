@@ -17,6 +17,7 @@ var player_id : int
 var player : PieceLogic
 var pieces  # dictionary whose keys are piece ids
 var board : Array # 2D array, with piece IDs in occupied spaces, null if empty
+var formation_factory : PawnFormationFactory
 
 signal spawn_enemy(id, pos) # int and IntVec2
 signal move_enemy(id, new_pos) # int and IntVec2
@@ -24,7 +25,7 @@ signal enemy_death(id, old_pos) # int and IntVec2
 signal pawn_promotion(id, pos) # int and IntVec2
 signal move_draw(type, slot, new_next_type) # MoveType and int and MoveType
 signal phase_change(new_phase) # Phases
-signal on_damage(id, pos) # int id of the enemy that attacked, IntVec2 of pos
+signal on_damage(id, pos, life_remaining) # int id of the enemy that attacked, IntVec2 of pos, int
 signal on_death(id, pos) # int if of the enemy that attacked, IntVec2 of pos
 
 # Called when the node enters the scene tree for the first time.
@@ -53,6 +54,7 @@ func reset():
 		player_id: player
 	}
 	board = [] # 2D array, with piece IDs in occupied spaces, null if empty
+	formation_factory = PawnFormationFactory.new(HEIGHT - SPAWN_ROWS - 1, WIDTH)
 	
 	# Init the moves
 	var starting_moves = [
@@ -364,12 +366,14 @@ func move_enemy(piece: PieceLogic, new_pos: IntVec2):
 		board[piece.pos.x][piece.pos.y] = piece.id
 		emit_signal("move_enemy", piece.id, piece.pos)
 	elif lives > 1:
-		emit_signal("on_damage", piece.id, piece.pos)
 		lives = lives - 1
+		emit_signal("move_enemy", piece.id, piece.pos)
+		emit_signal("on_damage", piece.id, piece.pos, lives)
 		kill_enemy_piece(piece.id)
 	else:
-		emit_signal("on_death", piece.id, piece.pos)
+		emit_signal("move_enemy", piece.id, piece.pos)
 		lives = 0
+		emit_signal("on_death", piece.id, piece.pos)
 		phase = Phases.GAME_OVER
 		emit_signal("phase_change", phase)
 		
