@@ -153,7 +153,7 @@ func get_random_player_move() -> int:
 # Deletes an enemy piece from the game
 # Expects:
 #   int id  is the id of an enemy piece
-func kill_enemy_piece(id : int, do_not_emit : bool = false):
+func kill_enemy_piece(id : int, emit : bool = true):
 	var index = enemy_ids.find(id)
 	if index != -1:
 		enemy_ids.remove(index)
@@ -161,7 +161,7 @@ func kill_enemy_piece(id : int, do_not_emit : bool = false):
 		board[pos.x][pos.y] = null
 		pieces[id].is_dead = true
 		pieces.erase(id)
-		if not do_not_emit:
+		if emit:
 			emit_signal("enemy_death", id, pos)
 
 
