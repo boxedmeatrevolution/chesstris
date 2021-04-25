@@ -16,6 +16,7 @@ var ipos := IntVec2.new(0, 0)
 var target_pos : Vector2
 onready var sprite := $Sprite
 onready var board : ChessBoard = get_tree().get_root().find_node("ChessBoard", true, false)
+onready var effects : Node2D = get_tree().get_root().find_node("Effects", true, false)
 
 func _ready() -> void:
 	self.target_pos = board.get_pos(self.ipos)
@@ -32,7 +33,7 @@ func _process(delta : float) -> void:
 			self.global_position = self.target_pos
 			if self.hurt:
 				var hurt_flash : Node2D = HurtFlashInstance.instance()
-				self.get_parent().add_child(hurt_flash)
+				self.effects.add_child(hurt_flash)
 				hurt_flash.global_position = self.global_position
 				queue_free()
 				
