@@ -141,8 +141,10 @@ func increment_phase():
 	elif phase == Phases.PLAYER_MOVE:
 		if should_level_up():
 			if level >= MAX_LEVEL:
+				kill_all_enemies()
 				phase = Phases.YOU_WIN
 			else:
+				kill_all_enemies()
 				level_up()
 		elif (COMBO_ON_CAPTURE && piece_captured_on_this_turn)\
 		|| (COMBO_ON_BUTTON && button_pressed_on_this_turn)\
@@ -202,10 +204,6 @@ func should_level_up() -> bool:
 	return true
 
 func level_up():
-	var enemy_ids_copy = enemy_ids.duplicate()
-	for id in enemy_ids_copy:
-		print(pieces[id])
-		kill_enemy_piece(id)
 	level = level +1
 	turn = 0
 	print("Level %s, Turn %s" % [level, turn])
@@ -214,6 +212,12 @@ func level_up():
 	if lives < moves.size():
 		lives = lives + 1
 		emit_signal("on_life_up", lives)
+
+func kill_all_enemies(): 
+	var enemy_ids_copy = enemy_ids.duplicate()
+	for id in enemy_ids_copy:
+		print(pieces[id])
+		kill_enemy_piece(id)
 
 # Increments the phase and moves the player if the move is legal
 # Expects:
@@ -254,12 +258,25 @@ func try_player_move(slot: int, pos: IntVec2) -> bool:
 # Returns a random MoveType for the player
 func get_random_player_move() -> int:
 	var bucket = [
-		MoveType.GOOD_PAWN, MoveType.KNIGHT, 
+		MoveType.GOOD_PAWN, MoveType.QUEEN,
+		MoveType.KNIGHT, MoveType.KING,
 		MoveType.BISHOP, MoveType.ROOK,
-		MoveType.QUEEN, MoveType.KING
+		MoveType.KNIGHT, MoveType.KING,
+		MoveType.BISHOP, MoveType.ROOK
 	]
-	var idx = randi() % bucket.size()
-	return bucket[idx]
+	# Repeatedly draw from the bucket until a new move is selected, or 
+	# some maximum number of draws is reached
+	var counter = 0
+	var max_tries = 3
+	var move = 0
+	while true:
+		counter = counter + 1
+		move = bucket[randi() % bucket.size()]
+		var i = moves.find(move)
+		var already_have_it = i >= 0 && i < lives
+		if counter >= max_tries || not already_have_it:
+			break
+	return move
 
 # Deletes an enemy piece from the game
 # Expects:
