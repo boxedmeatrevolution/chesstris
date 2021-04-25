@@ -84,6 +84,7 @@ var button_map : Array
 var has_been_hit_on_this_turn : bool
 var piece_captured_on_this_turn : bool
 var button_pressed_on_this_turn : bool
+var combo_count : int
 
 signal spawn_enemy(id, pos) # int and IntVec2
 signal move_enemy(id, new_pos) # int and IntVec2
@@ -97,6 +98,7 @@ signal on_level_up(new_level) # int
 signal on_button_press(id) # int id of the button
 signal on_button_create(id, pos) # int id of the new button, IntVec2 of its position
 signal on_life_up(life_remaining) # int the new number of lives
+signal on_combo(pos, count) # the count is an int of the number of combos so far 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -107,7 +109,7 @@ func reset():
 	# Variables
 	_next_object_id = 1
 	if phase != Phases.GAME_OVER: # If it was a game over, then we do not reset the level
-		level = 0
+		level = 4
 	phase = Phases.PRE_GAME
 	turn  = 0
 	moves = [MoveType.GOOD_PAWN, MoveType.GOOD_PAWN, MoveType.GOOD_PAWN]
@@ -115,6 +117,7 @@ func reset():
 	lives = moves.size()
 	enemy_ids = [] # list of ids
 	player_id = 0
+	combo_count = 0
 	player = PieceLogic.new({
 		'id': player_id,
 		'is_player': true,
@@ -168,6 +171,7 @@ func increment_phase():
 		phase = Phases.PLAYER_MOVE
 	elif phase == Phases.PLAYER_MOVE:
 		if should_level_up():
+			combo_count = 0
 			if level >= MAX_LEVEL:
 				kill_all_enemies()
 				phase = Phases.YOU_WIN
@@ -177,8 +181,12 @@ func increment_phase():
 		elif (COMBO_ON_CAPTURE && piece_captured_on_this_turn)\
 		|| (COMBO_ON_BUTTON && button_pressed_on_this_turn)\
 		|| (COMBO_ON_BUTTON_AND_CAPTURE && button_pressed_on_this_turn && piece_captured_on_this_turn):
+			combo_count = combo_count + 1
+			emit_signal("on_combo", player.pos, combo_count)
+			print("COMBO %s" % combo_count)
 			phase = Phases.PLAYER_MOVE
 		else:
+			combo_count = 0
 			phase = Phases.QUEEN_MOVE
 	elif phase == Phases.QUEEN_MOVE:
 		phase = Phases.PAWN_MOVE
