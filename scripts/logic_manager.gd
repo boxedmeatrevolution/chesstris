@@ -68,7 +68,7 @@ func reset():
 	player = PieceLogic.new({
 		'id': player_id,
 		'is_player': true,
-		'pos': IntVec2.new(2,4),
+		'pos': IntVec2.new(2,2),
 		'type': MoveType.GOOD_PAWN
 	})
 	pieces = {  # keys are piece ids
