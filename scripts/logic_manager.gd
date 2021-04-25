@@ -28,7 +28,7 @@ signal pawn_promotion(id, pos) # int and IntVec2
 signal move_draw(type, slot, new_next_type) # MoveType and int and MoveType
 signal phase_change(new_phase) # Phases
 signal on_damage(id, pos, life_remaining) # int id of the enemy that attacked, IntVec2 of pos, int
-signal on_death(id, pos) # int if of the enemy that attacked, IntVec2 of pos
+signal on_death() # int if of the enemy that attacked, IntVec2 of pos
 signal on_level_up(new_level) # int
 signal on_button_press(id) # int id of the button
 signal on_button_create(id, pos) # int id of the new button, IntVec2 of its position
@@ -376,7 +376,7 @@ func move_enemy(piece: PieceLogic, new_pos: IntVec2):
 		emit_signal("move_enemy", piece.id, piece.pos)
 		lives = 0
 		emit_signal("on_damage", piece.id, piece.pos, lives)
-		emit_signal("on_death", piece.id, piece.pos)
+		emit_signal("on_death")
 		phase = Phases.GAME_OVER
 		emit_signal("phase_change", phase)
 
