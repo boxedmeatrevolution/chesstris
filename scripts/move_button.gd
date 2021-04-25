@@ -33,7 +33,7 @@ func _ready() -> void:
 	player.connect("finish_select_move", self, "_finish_select_move")
 	LogicManager.connect("move_draw", self, "_move_draw")
 
-func _move_draw(type : int, slot : int) -> void:
+func _move_draw(type : int, slot : int, next_move : int) -> void:
 	if self.index == slot:
 		self.move_sprite.frame = _convert_move_sprite_index(LogicManager.moves[self.index])
 	self.outline_sprite.visible = false
