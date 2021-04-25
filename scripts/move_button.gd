@@ -79,4 +79,4 @@ func _on_damage(id, ipos, lives) -> void:
 		self.disabled = true
 		self.active = false
 		self.outline_sprite.visible = false
-		self.move_sprite.frame = -1
+		self.move_sprite.frame = 6
