@@ -35,7 +35,6 @@ func _process(delta : float) -> void:
 				self.get_parent().add_child(hurt_flash)
 				hurt_flash.global_position = self.global_position
 				queue_free()
-				print("Death")
 				
 		else:
 			self.global_position = self.target_pos + delta_pos * exp(-delta / PLACE_TIME)
