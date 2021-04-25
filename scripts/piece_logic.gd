@@ -7,6 +7,7 @@ var id : int = -1
 var pos : IntVec2
 var type = MoveType.GOOD_PAWN
 var is_player : bool = false
+var is_dead : bool = false
 
 
 func _init(params) -> void:

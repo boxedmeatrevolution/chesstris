@@ -9,6 +9,7 @@ var next_object_id : int
 var phase : int
 var level : int
 var turn : int 
+var lives : int
 var moves : Array
 var next_move : int
 var enemy_ids : Array # list of ids
@@ -21,8 +22,10 @@ signal spawn_enemy(id, pos) # int and IntVec2
 signal move_enemy(id, new_pos) # int and IntVec2
 signal enemy_death(id, old_pos) # int and IntVec2
 signal pawn_promotion(id, pos) # int and IntVec2
-signal move_draw(type, slot) # MoveType and int
+signal move_draw(type, slot, new_next_type) # MoveType and int and MoveType
 signal phase_change(new_phase) # Phases
+signal on_damage(id, pos) # int id of the enemy that attacked, IntVec2 of pos
+signal on_death(id, pos) # int if of the enemy that attacked, IntVec2 of pos
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -37,6 +40,7 @@ func reset():
 	turn  = 0
 	moves = [MoveType.GOOD_PAWN, MoveType.GOOD_PAWN, MoveType.GOOD_PAWN]
 	next_move = MoveType.GOOD_PAWN
+	lives = moves.size()
 	enemy_ids = [] # list of ids
 	player_id = 0
 	player = PieceLogic.new({
@@ -62,6 +66,7 @@ func reset():
 		var move_idx = randi() % starting_moves.size()
 		moves[i] = starting_moves[move_idx]
 		starting_moves.remove(move_idx)
+	next_move = starting_moves[randi() % starting_moves.size()]
 	# Init the board
 	for x in range(0, WIDTH):
 		var column = []
@@ -76,7 +81,6 @@ func get_next_id():
 	var next = next_object_id
 	next_object_id = next_object_id + 1
 	return next
-	
 
 func increment_phase():
 	if phase == Phases.PRE_GAME:
@@ -89,6 +93,8 @@ func increment_phase():
 		phase = Phases.SPAWN_ENEMY
 	elif phase == Phases.SPAWN_ENEMY:
 		phase = Phases.PLAYER_MOVE
+	elif phase == Phases.GAME_OVER:
+		phase = Phases.GAME_OVER
 	emit_signal("phase_change", phase)
 	print("The phase is %s" % phase)
 	do_phase()
@@ -124,8 +130,9 @@ func try_player_move(slot: int, pos: IntVec2) -> bool:
 				# A piece was captured!
 				kill_enemy_piece(old_tenant)
 			board[pos.x][pos.y] = player.id
-			moves[slot] = get_random_player_move()
-			emit_signal("move_draw", moves[slot], slot)
+			moves[slot] = next_move
+			next_move = get_random_player_move()
+			emit_signal("move_draw", moves[slot], slot, next_move)
 			increment_phase()
 			return true
 	return false
@@ -150,6 +157,7 @@ func kill_enemy_piece(id : int):
 		enemy_ids.remove(index)
 		var pos = pieces[id].pos
 		board[pos.x][pos.y] = null
+		pieces[id].is_dead = true
 		pieces.erase(id)
 		emit_signal("enemy_death", id, pos)
 
@@ -298,11 +306,9 @@ func move_queens():
 		var moves = get_legal_moves(queen.pos, MoveType.QUEEN, false)
 		var best_move = moves.pop_back()
 		var best_proximity = no_sqrt_dist_to_player(best_move)
-		var is_capture = false
 		for move in moves:
 			if board[move.x][move.y] == player_id:
 				best_move = move
-				is_capture = true
 				break
 			var proximity = no_sqrt_dist_to_player(move)
 			if proximity < best_proximity:
@@ -346,6 +352,27 @@ func move_pawns():
 			# Promote that boiiiii!
 			pawn.type = MoveType.QUEEN
 			emit_signal("pawn_promotion", pawn.id, pawn.pos)
+
+# Requires that the new_pos is a valid move
+# Will emit move_enemy, on_damage, on_death signals as needed
+func move_enemy(piece: PieceLogic, new_pos: IntVec2):
+	board[piece.pos.x][piece.pos.y] = null
+	piece.pos.x = new_pos.x
+	piece.pos.y = new_pos.y
+	var is_capture = piece.pos.equals(player.pos)
+	if not is_capture:
+		board[piece.pos.x][piece.pos.y] = piece.id
+		emit_signal("move_enemy", piece.id, piece.pos)
+	elif lives > 1:
+		emit_signal("on_damage", piece.id, piece.pos)
+		lives = lives - 1
+		kill_enemy_piece(piece.id)
+	else:
+		emit_signal("on_death", piece.id, piece.pos)
+		lives = 0
+		phase = Phases.GAME_OVER
+		emit_signal("phase_change", phase)
+		
 
 func spawn_enemies():
 	if turn % 2 == 0 && enemy_ids.size() < 2:
