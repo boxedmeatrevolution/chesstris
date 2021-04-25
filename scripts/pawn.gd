@@ -11,6 +11,7 @@ const STATE_QUEEN := 1
 
 var idx := 0
 var hurt := false
+var dying := false
 var state := STATE_PAWN
 var ipos := IntVec2.new(0, 0)
 var target_pos : Vector2
@@ -27,18 +28,26 @@ func _ready() -> void:
 	LogicManager.connect("on_damage", self, "_logic_on_damage")
 
 func _process(delta : float) -> void:
-	if self.target_pos != self.global_position:
-		var delta_pos := self.global_position - self.target_pos
-		if delta_pos.length_squared() <= 10:
-			self.global_position = self.target_pos
-			if self.hurt:
-				var hurt_flash : Node2D = HurtFlashInstance.instance()
-				self.effects.add_child(hurt_flash)
-				hurt_flash.global_position = self.global_position
-				queue_free()
-				
-		else:
-			self.global_position = self.target_pos + delta_pos * exp(-delta / PLACE_TIME)
+	if self.dying:
+		self.position += 1000 * self.target_pos * delta
+		self.target_pos.y += 2 * delta
+		self.rotation_degrees += 360 * delta
+		self.scale *= exp(-delta / 3.0)
+		if self.position.y > 2000:
+			queue_free()
+	else:
+		if self.target_pos != self.global_position:
+			var delta_pos := self.global_position - self.target_pos
+			if delta_pos.length_squared() <= 10:
+				self.global_position = self.target_pos
+				if self.hurt:
+					var hurt_flash : Node2D = HurtFlashInstance.instance()
+					self.effects.add_child(hurt_flash)
+					hurt_flash.global_position = self.global_position
+					queue_free()
+					
+			else:
+				self.global_position = self.target_pos + delta_pos * exp(-delta / PLACE_TIME)
 
 func _logic_move(idx : int, ipos : IntVec2) -> void:
 	if idx == self.idx:
@@ -46,7 +55,9 @@ func _logic_move(idx : int, ipos : IntVec2) -> void:
 
 func _logic_death(idx : int, ipos : IntVec2) -> void:
 	if idx == self.idx:
-		queue_free()
+		self.dying = true
+		var angle = randf() * 2 * PI
+		self.target_pos = Vector2(cos(angle), sin(angle))
 
 func _logic_promotion(idx : int, ipos : IntVec2) -> void:
 	if idx == self.idx:
