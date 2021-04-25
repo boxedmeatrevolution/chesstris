@@ -14,7 +14,7 @@ var button_positions = { # button positions for each level
 	1: offset_corners2,
 	2: offset_corners,
 	3: offset_corners2,
-	4: one_butt
+	4: offset_corners
 }
 
 var _next_object_id : int
@@ -58,7 +58,7 @@ func reset():
 	# Variables
 	_next_object_id = 1
 	phase = Phases.PRE_GAME
-	level = 4
+	level = 0
 	turn  = 0
 	moves = [MoveType.GOOD_PAWN, MoveType.GOOD_PAWN, MoveType.GOOD_PAWN]
 	next_move = MoveType.GOOD_PAWN
@@ -68,7 +68,7 @@ func reset():
 	player = PieceLogic.new({
 		'id': player_id,
 		'is_player': true,
-		'pos': IntVec2.new(1,1),
+		'pos': IntVec2.new(2,4),
 		'type': MoveType.GOOD_PAWN
 	})
 	pieces = {  # keys are piece ids
@@ -135,7 +135,6 @@ func increment_phase():
 	emit_signal("phase_change", phase)
 	print("The phase is %s" % Phases.string(phase))
 	do_phase()
-
 
 func do_phase():
 	if phase == Phases.PLAYER_MOVE:

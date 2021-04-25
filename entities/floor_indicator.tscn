@@ -11,10 +11,12 @@ __meta__ = {
 }
 
 [node name="Sprite" type="Sprite" parent="."]
+position = Vector2( -1, 0 )
 texture = ExtResource( 1 )
-offset = Vector2( 0, -64 )
+offset = Vector2( 0, -35 )
 
 [node name="NeedleSprite" type="Sprite" parent="."]
-rotation = 5.60774
+position = Vector2( -1, 0 )
+rotation = 0.10472
 texture = ExtResource( 2 )
-offset = Vector2( 38, 0 )
+offset = Vector2( 39, 0 )

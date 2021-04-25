@@ -2,7 +2,7 @@ extends Node2D
 
 onready var needle_sprite := $NeedleSprite
 
-const ANGLES := [213, 240, 267, 290, 322]
+const ANGLES := [174, 220, 269, -44, 6]
 
 func _ready() -> void:
 	self.set_floor(0)
