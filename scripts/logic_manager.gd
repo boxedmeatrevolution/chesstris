@@ -109,7 +109,7 @@ func reset():
 	# Variables
 	_next_object_id = 1
 	if phase != Phases.GAME_OVER: # If it was a game over, then we do not reset the level
-		level = 4
+		level = 0
 	phase = Phases.PRE_GAME
 	turn  = 0
 	moves = [MoveType.GOOD_PAWN, MoveType.GOOD_PAWN, MoveType.GOOD_PAWN]
