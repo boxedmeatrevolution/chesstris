@@ -316,11 +316,7 @@ func move_queens():
 			if proximity < best_proximity:
 				best_move = move
 				best_proximity = proximity
-		board[queen.pos.x][queen.pos.y] = null
-		queen.pos.x = best_move.x
-		queen.pos.y = best_move.y
-		board[queen.pos.x][queen.pos.y] = queen.id
-		emit_signal("move_enemy", queen.id, queen.pos)
+		move_enemy(queen, best_move)
 
 func no_sqrt_dist_to_player(pos : IntVec2):
 	var dx = player.pos.x - pos.x
@@ -345,12 +341,8 @@ func move_pawns():
 				break
 			elif move.y < best_move.y:
 				best_move = move #prefer moving down to staying still
-		board[pawn.pos.x][pawn.pos.y] = null
-		pawn.pos.x = best_move.x
-		pawn.pos.y = best_move.y
-		board[pawn.pos.x][pawn.pos.y] = pawn.id
-		emit_signal("move_enemy", pawn.id, pawn.pos)
-		if pawn.pos.y == 0:
+		move_enemy(pawn, best_move)
+		if pawn.pos.y == 0 && not pawn.is_dead:
 			# Promote that boiiiii!
 			pawn.type = MoveType.QUEEN
 			emit_signal("pawn_promotion", pawn.id, pawn.pos)
@@ -379,7 +371,7 @@ func move_enemy(piece: PieceLogic, new_pos: IntVec2):
 		
 
 func spawn_enemies():
-	if turn % 2 == 0 && enemy_ids.size() < 2:
+	if turn % 2 == 0:
 		var pawn = PieceLogic.new({
 			'id': get_next_id(),
 			'is_player': false,
