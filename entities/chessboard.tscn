@@ -1,10 +1,7 @@
 [gd_scene load_steps=3 format=2]
 
+[ext_resource path="res://sprites/chessboard.png" type="Texture" id=1]
 [ext_resource path="res://scripts/chessboard.gd" type="Script" id=2]
-
-[sub_resource type="StreamTexture" id=1]
-flags = 4
-load_path = "res://.import/chesstris-12.png-971d9de408a8ab2d1fe04073e0a4a7e5.stex"
 
 [node name="ChessBoard" type="Node2D"]
 script = ExtResource( 2 )
@@ -14,5 +11,5 @@ __meta__ = {
 
 [node name="Sprite" type="Sprite" parent="."]
 position = Vector2( 0, 96 )
-texture = SubResource( 1 )
+texture = ExtResource( 1 )
 centered = false
