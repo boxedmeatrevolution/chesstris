@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://sprites/floor_indicator.png" type="Texture" id=1]
+[ext_resource path="res://sprites/needle.png" type="Texture" id=2]
+[ext_resource path="res://scripts/floor_indicator.gd" type="Script" id=3]
+
+[node name="FloorIndicator" type="Node2D"]
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="."]
+texture = ExtResource( 1 )
+offset = Vector2( 0, -64 )
+
+[node name="NeedleSprite" type="Sprite" parent="."]
+rotation = 5.60774
+texture = ExtResource( 2 )
+offset = Vector2( 38, 0 )

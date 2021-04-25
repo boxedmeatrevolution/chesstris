@@ -5,6 +5,9 @@
 
 [node name="HurtFlash" type="Node2D"]
 script = ExtResource( 2 )
+__meta__ = {
+"_edit_group_": true
+}
 
 [node name="Sprite" type="Sprite" parent="."]
 scale = Vector2( 2, 2 )

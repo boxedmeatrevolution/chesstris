@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://entities/chessboard.tscn" type="PackedScene" id=1]
 [ext_resource path="res://entities/player.tscn" type="PackedScene" id=2]
 [ext_resource path="res://entities/controller.tscn" type="PackedScene" id=3]
 [ext_resource path="res://entities/move_button.tscn" type="PackedScene" id=4]
 [ext_resource path="res://entities/move_display.tscn" type="PackedScene" id=5]
+[ext_resource path="res://entities/floor_indicator.tscn" type="PackedScene" id=6]
 
 [node name="Main" type="Node2D"]
 
@@ -15,6 +16,8 @@ position = Vector2( 92.4487, -75.033 )
 
 [node name="BoardButtons" type="Node2D" parent="."]
 
+[node name="Buttons" type="Node2D" parent="."]
+
 [node name="Pawns" type="Node2D" parent="."]
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
@@ -22,16 +25,19 @@ position = Vector2( 860.677, 142.592 )
 
 [node name="Effects" type="Node2D" parent="."]
 
+[node name="FloorIndicator" parent="." instance=ExtResource( 6 )]
+position = Vector2( 834.81, 177.35 )
+
 [node name="MoveButton" parent="." instance=ExtResource( 4 )]
-position = Vector2( 777.433, 222.269 )
+position = Vector2( 747.703, 359.028 )
 
 [node name="MoveButton2" parent="." instance=ExtResource( 4 )]
-position = Vector2( 783.379, 300.757 )
+position = Vector2( 744.135, 456.543 )
 index = 1
 
 [node name="MoveButton3" parent="." instance=ExtResource( 4 )]
-position = Vector2( 791.704, 370.92 )
+position = Vector2( 745.325, 544.544 )
 index = 2
 
 [node name="MoveDisplay" parent="." instance=ExtResource( 5 )]
-position = Vector2( 910.919, 284.379 )
+position = Vector2( 893.081, 448.49 )

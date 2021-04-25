@@ -8,6 +8,9 @@ extents = Vector2( 48, 48 )
 
 [node name="BoardButton" type="Node2D"]
 script = ExtResource( 2 )
+__meta__ = {
+"_edit_group_": true
+}
 
 [node name="Sprite" type="Sprite" parent="."]
 texture = ExtResource( 1 )
