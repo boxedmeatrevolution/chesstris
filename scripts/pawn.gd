@@ -16,6 +16,7 @@ var state := STATE_PAWN
 var ipos := IntVec2.new(0, 0)
 var target_pos : Vector2
 onready var sprite := $Sprite
+onready var enemy_death_stream := $EnemyDeathStream
 onready var board : ChessBoard = get_tree().get_root().find_node("ChessBoard", true, false)
 onready var effects : Node2D = get_tree().get_root().find_node("Effects", true, false)
 
@@ -58,6 +59,7 @@ func _logic_death(idx : int, ipos : IntVec2) -> void:
 		self.dying = true
 		var angle = randf() * 2 * PI
 		self.target_pos = Vector2(cos(angle), sin(angle))
+		self.enemy_death_stream.play()
 
 func _logic_promotion(idx : int, ipos : IntVec2) -> void:
 	if idx == self.idx:
