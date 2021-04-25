@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/elevator_ride.wav-b0d3a0bc2ccb015338f18fc429a27f2b.sample"
+
+[deps]
+
+source_file="res://sounds/elevator_ride.wav"
+dest_files=[ "res://.import/elevator_ride.wav-b0d3a0bc2ccb015338f18fc429a27f2b.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0
