@@ -351,10 +351,14 @@ func move_pawns():
 # Requires that the new_pos is a valid move
 # Will emit move_enemy, on_damage, on_death signals as needed
 func move_enemy(piece: PieceLogic, new_pos: IntVec2):
+	var starts_off_board = piece.pos.y > HEIGHT - SPAWN_ROWS
 	board[piece.pos.x][piece.pos.y] = null
 	piece.pos.x = new_pos.x
 	piece.pos.y = new_pos.y
 	var is_capture = piece.pos.equals(player.pos)
+	if starts_off_board && new_pos.y <= HEIGHT - SPAWN_ROWS:
+		board[piece.pos.x][piece.pos.y] = piece.id
+		emit_signal("spawn_enemy", piece.id, piece.pos)
 	if not is_capture:
 		board[piece.pos.x][piece.pos.y] = piece.id
 		emit_signal("move_enemy", piece.id, piece.pos)
@@ -372,7 +376,7 @@ func move_enemy(piece: PieceLogic, new_pos: IntVec2):
 		
 
 func spawn_enemies():
-	if turn % 2 == 0:
+	if turn % 3 == 0:
 		var positions = formation_factory.generate(level, turn)
 		for pos in positions:
 			if (is_on_board_and_empty(pos)):
