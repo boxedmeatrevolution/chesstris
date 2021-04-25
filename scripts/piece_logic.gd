@@ -15,3 +15,6 @@ func _init(params) -> void:
 	self.pos = params['pos']
 	self.type = params['type']
 	self.is_player = params['is_player']
+
+func _to_string() -> String:
+	return "Id: %s, Pos: %s, Type: %s, IsPlayer %s" % [id, pos, type, is_player]

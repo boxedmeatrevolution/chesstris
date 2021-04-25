@@ -13,7 +13,7 @@ var button_positions = { # button positions for each level
 	4: in_corners
 }
 
-var next_object_id : int
+var _next_object_id : int
 
 var phase : int
 var level : int
@@ -51,9 +51,9 @@ func _ready():
 # Completely reset EVERYTHING
 func reset():
 	# Variables
-	next_object_id = 1
+	_next_object_id = 1
 	phase = Phases.PRE_GAME
-	level = 3
+	level = 0
 	turn  = 0
 	moves = [MoveType.GOOD_PAWN, MoveType.GOOD_PAWN, MoveType.GOOD_PAWN]
 	next_move = MoveType.GOOD_PAWN
@@ -97,8 +97,8 @@ func reset():
 
 # Returns unique ids for pieces 
 func get_next_id():
-	var next = next_object_id
-	next_object_id = next_object_id + 1
+	var next = _next_object_id
+	_next_object_id = _next_object_id + 1
 	return next
 
 func increment_phase():
@@ -142,7 +142,7 @@ func init_buttons():
 	button_ids = []
 	buttons = {}
 	for p in button_positions[level]:
-		var id = next_object_id
+		var id = get_next_id()
 		button_ids.push_back(id)
 		buttons[id] = ButtonLogic.new({ 'id': id, 'pos': IntVec2.new(p.x, p.y) })
 		button_map[p.x][p.y] = id
@@ -156,7 +156,9 @@ func should_level_up() -> bool:
 	return true
 
 func level_up():
-	for id in enemy_ids:
+	var enemy_ids_copy = enemy_ids.duplicate()
+	for id in enemy_ids_copy:
+		print(pieces[id])
 		kill_enemy_piece(id)
 	level = level +1
 	turn = 0
