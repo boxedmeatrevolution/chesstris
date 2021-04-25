@@ -20,14 +20,14 @@ func _init(spawn_row_ : int, row_width_ : int) -> void:
 	self.spawn_row = spawn_row_
 	self.row_width = row_width_
 
-func get_formation(level: int, turn: int) -> Array:
+func generate(level: int, turn: int) -> Array:
 	return _prep_formation(SINGLE)
 	
 func _prep_formation(template: Array) -> Array:
 	var positions = []
 	if template.size() == 0:
 		return positions
-	var width = template[0].size
+	var width = template[0].size()
 	var height = template.size()
 	var max_x_offset = max(0, row_width - width)
 	var x_offset = randi() % (max_x_offset + 1)
@@ -35,7 +35,7 @@ func _prep_formation(template: Array) -> Array:
 		for x in range(0, width): 
 			if template[y][x] == 1:
 				positions.push_back(
-					IntVec2.new(x_offset + x, spawn_row + height - y - 1)
+					IntVec2.new(x_offset + x, spawn_row + height - y)
 				)
 	return positions
 

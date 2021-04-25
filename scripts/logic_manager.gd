@@ -1,8 +1,8 @@
 extends Node
 
 const WIDTH : int = 6
-const HEIGHT : int = 7
-const SPAWN_ROWS : int = 1 # top 3 rows are for spawning pieces
+const HEIGHT : int = 9
+const SPAWN_ROWS : int = 3 # top 3 rows are for spawning pieces
 
 var next_object_id : int
 
@@ -153,7 +153,7 @@ func get_random_player_move() -> int:
 # Deletes an enemy piece from the game
 # Expects:
 #   int id  is the id of an enemy piece
-func kill_enemy_piece(id : int):
+func kill_enemy_piece(id : int, do_not_emit : bool = false):
 	var index = enemy_ids.find(id)
 	if index != -1:
 		enemy_ids.remove(index)
@@ -161,7 +161,8 @@ func kill_enemy_piece(id : int):
 		board[pos.x][pos.y] = null
 		pieces[id].is_dead = true
 		pieces.erase(id)
-		emit_signal("enemy_death", id, pos)
+		if not do_not_emit:
+			emit_signal("enemy_death", id, pos)
 
 
 # Returns an array of IntVec2, representing all legal moves. 
@@ -361,7 +362,7 @@ func move_enemy(piece: PieceLogic, new_pos: IntVec2):
 		lives = lives - 1
 		emit_signal("move_enemy", piece.id, piece.pos)
 		emit_signal("on_damage", piece.id, piece.pos, lives)
-		kill_enemy_piece(piece.id)
+		kill_enemy_piece(piece.id, false)
 	else:
 		emit_signal("move_enemy", piece.id, piece.pos)
 		lives = 0
@@ -372,14 +373,18 @@ func move_enemy(piece: PieceLogic, new_pos: IntVec2):
 
 func spawn_enemies():
 	if turn % 2 == 0:
-		var pawn = PieceLogic.new({
-			'id': get_next_id(),
-			'is_player': false,
-			'pos': IntVec2.new(randi() % WIDTH, WIDTH),
-			'type': MoveType.BAD_PAWN
-		})
-		if (is_on_board_and_empty(pawn.pos)):
-			board[pawn.pos.x][pawn.pos.y] = pawn.id
-			enemy_ids.push_back(pawn.id)
-			pieces[pawn.id] = pawn
-			emit_signal("spawn_enemy", pawn.id, pawn.pos)
+		var positions = formation_factory.generate(level, turn)
+		for pos in positions:
+			if (is_on_board_and_empty(pos)):
+				var pawn = PieceLogic.new({
+					'id': get_next_id(),
+					'is_player': false,
+					'pos': pos,
+					'type': MoveType.BAD_PAWN
+				})
+				board[pawn.pos.x][pawn.pos.y] = pawn.id
+				enemy_ids.push_back(pawn.id)
+				pieces[pawn.id] = pawn
+				if pos.y <= HEIGHT - SPAWN_ROWS:
+					emit_signal("spawn_enemy", pawn.id, pawn.pos) 
+
