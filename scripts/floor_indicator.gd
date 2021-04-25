@@ -9,6 +9,7 @@ func _ready() -> void:
 	LogicManager.connect("on_level_up", self, "_on_level_up")
 
 func set_floor(floor_idx : int) -> void:
+	floor_idx = min(floor_idx, ANGLES.size() - 1)
 	self.needle_sprite.rotation_degrees = ANGLES[floor_idx]
 
 func _on_level_up(floor_idx : int) -> void:

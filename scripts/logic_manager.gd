@@ -3,16 +3,18 @@ extends Node
 const WIDTH : int = 6
 const HEIGHT : int = 9
 const SPAWN_ROWS : int = 3 # top 3 rows are for spawning pieces
+const MAX_LEVEL : int = 4
 var in_corners = [IntVec2.new(1,1), IntVec2.new(1,4), IntVec2.new(4,1), IntVec2.new(4,4)]
 var corners = [IntVec2.new(0,0), IntVec2.new(0,5), IntVec2.new(5,0), IntVec2.new(5,5)]
 var offset_corners = [IntVec2.new(0,1), IntVec2.new(1,5), IntVec2.new(5,4), IntVec2.new(4,0)]
 var offset_corners2 = [IntVec2.new(1,0), IntVec2.new(5,1), IntVec2.new(4,5), IntVec2.new(0,4)]
+var one_butt = [IntVec2.new(0,1)]
 var button_positions = { # button positions for each level
 	0: offset_corners,
 	1: offset_corners2,
 	2: offset_corners,
 	3: offset_corners2,
-	4: offset_corners
+	4: one_butt
 }
 
 var _next_object_id : int
@@ -56,7 +58,7 @@ func reset():
 	# Variables
 	_next_object_id = 1
 	phase = Phases.PRE_GAME
-	level = 0
+	level = 4
 	turn  = 0
 	moves = [MoveType.GOOD_PAWN, MoveType.GOOD_PAWN, MoveType.GOOD_PAWN]
 	next_move = MoveType.GOOD_PAWN
@@ -106,11 +108,18 @@ func get_next_id():
 	return next
 
 func increment_phase():
+	if phase == Phases.GAME_OVER || phase == Phases.YOU_WIN:
+		print("The phase is %s" % Phases.string(phase))
+		return
+	
 	if phase == Phases.PRE_GAME:
 		phase = Phases.PLAYER_MOVE
 	elif phase == Phases.PLAYER_MOVE:
 		if should_level_up():
-			level_up()
+			if level >= MAX_LEVEL:
+				phase = Phases.YOU_WIN
+			else:
+				level_up()
 		else:
 			phase = Phases.QUEEN_MOVE
 	elif phase == Phases.QUEEN_MOVE:
@@ -121,9 +130,12 @@ func increment_phase():
 		phase = Phases.PLAYER_MOVE
 	elif phase == Phases.GAME_OVER:
 		phase = Phases.GAME_OVER
+	elif phase == Phases.YOU_WIN:
+		phase = Phases.YOU_WIN
 	emit_signal("phase_change", phase)
-	print("The phase is %s" % phase)
+	print("The phase is %s" % Phases.string(phase))
 	do_phase()
+
 
 func do_phase():
 	if phase == Phases.PLAYER_MOVE:
@@ -135,6 +147,7 @@ func do_phase():
 	elif phase == Phases.SPAWN_ENEMY:
 		spawn_enemies()
 		turn = turn + 1
+		print("Turn %s" % turn)
 
 func init_buttons():
 	button_map = []
@@ -166,6 +179,7 @@ func level_up():
 		kill_enemy_piece(id)
 	level = level +1
 	turn = 0
+	print("Level %s, Turn %s" % [level, turn])
 	emit_signal("on_level_up", level)
 	init_buttons()
 	if lives < moves.size():
