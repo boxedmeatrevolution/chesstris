@@ -38,7 +38,7 @@ var lvl2 = [
 	IntVec2.new(2,4), IntVec2.new(3,4), IntVec2.new(4,2), IntVec2.new(4,3)
 ]
 var lvl3 = [
-	IntVec2.new(0,0), IntVec2.new(1,1), IntVec2.new(1,4), IntVec2.new(2,0),
+	IntVec2.new(0,2), IntVec2.new(1,1), IntVec2.new(1,4), IntVec2.new(2,0),
 	IntVec2.new(2,3), IntVec2.new(2,5), IntVec2.new(3,0), IntVec2.new(3,3),
 	IntVec2.new(3,5), IntVec2.new(4,1), IntVec2.new(4,4), IntVec2.new(5,2)
 ]
@@ -106,8 +106,9 @@ func _ready():
 func reset():
 	# Variables
 	_next_object_id = 1
+	if phase != Phases.GAME_OVER: # If it was a game over, then we do not reset the level
+		level = 0
 	phase = Phases.PRE_GAME
-	level = 0
 	turn  = 0
 	moves = [MoveType.GOOD_PAWN, MoveType.GOOD_PAWN, MoveType.GOOD_PAWN]
 	next_move = MoveType.GOOD_PAWN

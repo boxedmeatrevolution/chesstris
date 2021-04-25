@@ -29,7 +29,6 @@ func _process(delta : float) -> void:
 	elif LogicManager.phase == Phases.YOU_WIN:
 		phase_timer += delta
 		if phase_timer > YOU_WIN_TIME:
-			print("going gonign ignonsdng")
 			get_tree().change_scene("res://levels/youwin.tscn")
 	elif LogicManager.phase != Phases.PLAYER_MOVE:
 		phase_timer += delta
@@ -49,5 +48,3 @@ func _logic_spawn(idx : int, ipos : IntVec2) -> void:
 	pawn.ipos = ipos
 	pawn.target_pos = board.get_pos(ipos)
 	self.pawns.add_child(pawn)
-	#print(pawn.idx, " ", pawn.ipos.x, " ", pawn.ipos.y, " ", pawn.target_pos.x, " ", pawn.target_pos.y)
-	

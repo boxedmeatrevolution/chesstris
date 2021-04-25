@@ -5,7 +5,7 @@ onready var needle_sprite := $NeedleSprite
 const ANGLES := [174, 220, 269, -44, 6]
 
 func _ready() -> void:
-	self.set_floor(0)
+	self.set_floor(LogicManager.level)
 	LogicManager.connect("on_level_up", self, "_on_level_up")
 
 func set_floor(floor_idx : int) -> void:
