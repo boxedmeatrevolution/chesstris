@@ -13,7 +13,7 @@ func _ready() -> void:
 	LogicManager.connect("on_level_up", self, "_on_level_up")
 
 func _on_button_press(idx : int) -> void:
-	if self.idx == index:
+	if self.index == idx:
 		self.sprite.frame = 1
 
 func _on_level_up(floor_idx : int) -> void:

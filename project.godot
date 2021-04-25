@@ -10,6 +10,11 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "Object",
+"class": "ButtonLogic",
+"language": "GDScript",
+"path": "res://scripts/button_logic.gd"
+}, {
+"base": "Object",
 "class": "IntVec2",
 "language": "GDScript",
 "path": "res://scripts/intvec2.gd"
@@ -35,6 +40,7 @@ _global_script_classes=[ {
 "path": "res://scripts/piece_logic.gd"
 } ]
 _global_script_class_icons={
+"ButtonLogic": "",
 "IntVec2": "",
 "MoveType": "",
 "PawnFormationFactory": "",

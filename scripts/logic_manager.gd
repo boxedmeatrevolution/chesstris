@@ -3,6 +3,15 @@ extends Node
 const WIDTH : int = 6
 const HEIGHT : int = 9
 const SPAWN_ROWS : int = 3 # top 3 rows are for spawning pieces
+var in_corners = [IntVec2.new(1,1), IntVec2.new(1,4), IntVec2.new(4,1), IntVec2.new(4,4)]
+var corners = [IntVec2.new(0,0), IntVec2.new(0,5), IntVec2.new(5,0), IntVec2.new(5,5)]
+var button_positions = { # button positions for each level
+	0: in_corners,
+	1: corners,
+	2: in_corners,
+	3: corners,
+	4: in_corners
+}
 
 var next_object_id : int
 
@@ -20,6 +29,7 @@ var board : Array # 2D array, with piece IDs in occupied spaces, null if empty
 var formation_factory : PawnFormationFactory
 var button_ids : Array
 var buttons #dictionary whose keys are button ids
+var button_map : Array
 
 signal spawn_enemy(id, pos) # int and IntVec2
 signal move_enemy(id, new_pos) # int and IntVec2
@@ -32,6 +42,7 @@ signal on_death(id, pos) # int if of the enemy that attacked, IntVec2 of pos
 signal on_level_up(new_level) # int
 signal on_button_press(id) # int id of the button
 signal on_button_create(id, pos) # int id of the new button, IntVec2 of its position
+signal on_life_up(life_remaining) # int the new number of lives
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -42,7 +53,7 @@ func reset():
 	# Variables
 	next_object_id = 1
 	phase = Phases.PRE_GAME
-	level  = 3
+	level = 3
 	turn  = 0
 	moves = [MoveType.GOOD_PAWN, MoveType.GOOD_PAWN, MoveType.GOOD_PAWN]
 	next_move = MoveType.GOOD_PAWN
@@ -60,8 +71,7 @@ func reset():
 	}
 	board = [] # 2D array, with piece IDs in occupied spaces, null if empty
 	formation_factory = PawnFormationFactory.new(HEIGHT - SPAWN_ROWS - 1, WIDTH)
-	button_ids = []
-	buttons = {}
+	init_buttons()
 	
 	# Init the moves
 	var starting_moves = [
@@ -95,7 +105,10 @@ func increment_phase():
 	if phase == Phases.PRE_GAME:
 		phase = Phases.PLAYER_MOVE
 	elif phase == Phases.PLAYER_MOVE:
-		phase = Phases.QUEEN_MOVE
+		if should_level_up():
+			level_up()
+		else:
+			phase = Phases.QUEEN_MOVE
 	elif phase == Phases.QUEEN_MOVE:
 		phase = Phases.PAWN_MOVE
 	elif phase == Phases.PAWN_MOVE:
@@ -119,6 +132,40 @@ func do_phase():
 		spawn_enemies()
 		turn = turn + 1
 
+func init_buttons():
+	button_map = []
+	for x in range(0, WIDTH):
+		var col = []
+		for y in range(0, HEIGHT - SPAWN_ROWS):
+			col.push_back(null)
+		button_map.push_back(col)
+	button_ids = []
+	buttons = {}
+	for p in button_positions[level]:
+		var id = next_object_id
+		button_ids.push_back(id)
+		buttons[id] = ButtonLogic.new({ 'id': id, 'pos': IntVec2.new(p.x, p.y) })
+		button_map[p.x][p.y] = id
+		print("making a button")
+		emit_signal("on_button_create", id, p)
+
+func should_level_up() -> bool:
+	for id in button_ids:
+		if not buttons[id].pressed:
+			return false 
+	return true
+
+func level_up():
+	for id in enemy_ids:
+		kill_enemy_piece(id)
+	level = level +1
+	turn = 0
+	emit_signal("on_level_up", level)
+	init_buttons()
+	if lives < moves.size():
+		lives = lives + 1
+		emit_signal("on_life_up", lives)
+
 # Increments the phase and moves the player if the move is legal
 # Expects:
 #   int slot     which slot the player is using to move (corresponds to a piece type)
@@ -138,6 +185,13 @@ func try_player_move(slot: int, pos: IntVec2) -> bool:
 			if old_tenant != null:
 				# A piece was captured!
 				kill_enemy_piece(old_tenant)
+			if button_map[pos.x][pos.y] != null:
+				# A button was pressed!
+				var button_id = button_map[pos.x][pos.y]
+				var button = buttons[button_id]
+				if not button.pressed:
+					button.pressed = true
+					emit_signal("on_button_press", button_id)
 			board[pos.x][pos.y] = player.id
 			moves[slot] = next_move
 			next_move = get_random_player_move()
