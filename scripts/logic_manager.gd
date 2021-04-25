@@ -1,20 +1,40 @@
 extends Node
 
 const WIDTH : int = 6
-const HEIGHT : int = 9
-const SPAWN_ROWS : int = 3 # top 3 rows are for spawning pieces
+const HEIGHT : int = 12
+const SPAWN_ROWS : int = 6 # top 6 rows are for spawning pieces
 const MAX_LEVEL : int = 4
+const COMBO_ON_CAPTURE : bool = false # player gets to move again after a capture
+const COMBO_ON_BUTTON : bool = false # player gets to move again after a button press
+const COMBO_ON_BUTTON_AND_CAPTURE : bool = true # move again when a piece and button are captured on the same move
 var in_corners = [IntVec2.new(1,1), IntVec2.new(1,4), IntVec2.new(4,1), IntVec2.new(4,4)]
 var corners = [IntVec2.new(0,0), IntVec2.new(0,5), IntVec2.new(5,0), IntVec2.new(5,5)]
 var offset_corners = [IntVec2.new(0,1), IntVec2.new(1,5), IntVec2.new(5,4), IntVec2.new(4,0)]
 var offset_corners2 = [IntVec2.new(1,0), IntVec2.new(5,1), IntVec2.new(4,5), IntVec2.new(0,4)]
 var one_butt = [IntVec2.new(0,1)]
+var full_butt = [
+	IntVec2.new(0,0), IntVec2.new(0,1), IntVec2.new(0,2), IntVec2.new(0,3), IntVec2.new(0,4), IntVec2.new(0,5),
+	IntVec2.new(1,0), IntVec2.new(1,1), IntVec2.new(1,2), IntVec2.new(1,3), IntVec2.new(1,4), IntVec2.new(1,5),
+	IntVec2.new(2,0), IntVec2.new(2,1), IntVec2.new(2,2), IntVec2.new(2,3), IntVec2.new(2,4), IntVec2.new(2,5),
+	IntVec2.new(3,0), IntVec2.new(3,1), IntVec2.new(3,2), IntVec2.new(3,3), IntVec2.new(3,4), IntVec2.new(3,5),
+	IntVec2.new(4,0), IntVec2.new(4,1), IntVec2.new(4,2), IntVec2.new(4,3), IntVec2.new(4,4), IntVec2.new(4,5),
+	IntVec2.new(5,0), IntVec2.new(5,1), IntVec2.new(5,2), IntVec2.new(5,3), IntVec2.new(5,4), IntVec2.new(5,5),
+]
+var double_offset = [
+	IntVec2.new(0,1), IntVec2.new(1,5), IntVec2.new(5,4), IntVec2.new(4,0),
+	IntVec2.new(2,1), IntVec2.new(4,2), IntVec2.new(3,4), IntVec2.new(1,3)
+]
+var double_offset_2 = [
+	IntVec2.new(1,0), IntVec2.new(5,1), IntVec2.new(4,5), IntVec2.new(0,4),
+	IntVec2.new(1,2), IntVec2.new(2,4), IntVec2.new(4,3), IntVec2.new(3,1)
+]
+
 var button_positions = { # button positions for each level
-	0: offset_corners,
-	1: offset_corners2,
-	2: offset_corners,
-	3: offset_corners2,
-	4: offset_corners
+	0: double_offset,
+	1: double_offset_2,
+	2: double_offset,
+	3: double_offset_2,
+	4: double_offset
 }
 
 var _next_object_id : int
@@ -35,6 +55,8 @@ var button_ids : Array
 var buttons #dictionary whose keys are button ids
 var button_map : Array
 var has_been_hit_on_this_turn : bool
+var piece_captured_on_this_turn : bool
+var button_pressed_on_this_turn : bool
 
 signal spawn_enemy(id, pos) # int and IntVec2
 signal move_enemy(id, new_pos) # int and IntVec2
@@ -75,6 +97,8 @@ func reset():
 		player_id: player
 	}
 	has_been_hit_on_this_turn = false
+	piece_captured_on_this_turn = false
+	button_pressed_on_this_turn = false
 	board = [] # 2D array, with piece IDs in occupied spaces, null if empty
 	formation_factory = PawnFormationFactory.new(HEIGHT - SPAWN_ROWS - 1, WIDTH)
 	init_buttons()
@@ -120,6 +144,10 @@ func increment_phase():
 				phase = Phases.YOU_WIN
 			else:
 				level_up()
+		elif (COMBO_ON_CAPTURE && piece_captured_on_this_turn)\
+		|| (COMBO_ON_BUTTON && button_pressed_on_this_turn)\
+		|| (COMBO_ON_BUTTON_AND_CAPTURE && button_pressed_on_this_turn && piece_captured_on_this_turn):
+			phase = Phases.PLAYER_MOVE
 		else:
 			phase = Phases.QUEEN_MOVE
 	elif phase == Phases.QUEEN_MOVE:
@@ -139,6 +167,8 @@ func increment_phase():
 func do_phase():
 	if phase == Phases.PLAYER_MOVE:
 		has_been_hit_on_this_turn = false
+		piece_captured_on_this_turn = false
+		button_pressed_on_this_turn = false
 	elif phase == Phases.QUEEN_MOVE:
 		move_queens()
 	elif phase == Phases.PAWN_MOVE:
@@ -203,6 +233,7 @@ func try_player_move(slot: int, pos: IntVec2) -> bool:
 			var old_tenant = board[pos.x][pos.y]
 			if old_tenant != null:
 				# A piece was captured!
+				piece_captured_on_this_turn = true
 				kill_enemy_piece(old_tenant)
 			if button_map[pos.x][pos.y] != null:
 				# A button was pressed!
@@ -210,6 +241,7 @@ func try_player_move(slot: int, pos: IntVec2) -> bool:
 				var button = buttons[button_id]
 				if not button.pressed:
 					button.pressed = true
+					button_pressed_on_this_turn = true
 					emit_signal("on_button_press", button_id)
 			board[pos.x][pos.y] = player.id
 			moves[slot] = next_move
