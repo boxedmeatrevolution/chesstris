@@ -35,6 +35,7 @@ func _ready() -> void:
 	player.connect("finish_select_move", self, "_finish_select_move")
 	LogicManager.connect("move_draw", self, "_move_draw")
 	LogicManager.connect("on_damage", self, "_on_damage")
+	LogicManager.connect("on_life_up", self, "_on_life_up")
 
 func _move_draw(type : int, slot : int, next_move : int) -> void:
 	if not self.disabled:
@@ -49,6 +50,8 @@ func _on_click(obj : Node, event : InputEvent, idx : int) -> void:
 			self.click_stream.play()
 		elif player.state == player.STATE_SELECT_MOVE_TARGET:
 			player.undo_select_move_index()
+			player.select_move_index(self.index)
+			self.click_stream.play()
 
 func _on_mouse_enter() -> void:
 	if not self.disabled && self.active:
@@ -82,3 +85,10 @@ func _on_damage(id, ipos, lives) -> void:
 		self.active = false
 		self.outline_sprite.visible = false
 		self.move_sprite.frame = 6
+		
+func _on_life_up(lives) -> void:
+	if lives > self.index:
+		self.disabled = false
+		self.active = true
+		self.outline_sprite.visible
+		self.move_sprite.frame = _convert_move_sprite_index(LogicManager.moves[self.index])
