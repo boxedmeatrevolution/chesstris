@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://sprites/button.png" type="Texture" id=1]
 [ext_resource path="res://scripts/elevator_button.gd" type="Script" id=2]
+[ext_resource path="res://sounds/button_press.wav" type="AudioStream" id=3]
 
 [node name="ElevatorButton" type="Node2D"]
 script = ExtResource( 2 )
@@ -9,3 +10,9 @@ script = ExtResource( 2 )
 [node name="Sprite" type="Sprite" parent="."]
 texture = ExtResource( 1 )
 hframes = 2
+
+[node name="PressStream" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 3 )
+volume_db = 4.039
+attenuation = 1.18921
+bus = "SoundEffects"
