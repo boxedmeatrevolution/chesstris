@@ -26,6 +26,10 @@ func _ready() -> void:
 	self.target_pos = board.get_pos(LogicManager.player.pos)
 	self.global_position = self.target_pos
 	LogicManager.connect("phase_change", self, "_phase_change")
+	LogicManager.connect("on_death", self, "_on_death")
+
+func _on_death() -> void:
+	self.visible = false
 
 func _phase_change(new_phase : int) -> void:
 	if new_phase == Phases.PLAYER_MOVE:

@@ -1,14 +1,14 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://backgrounds/title.png" type="Texture" id=1]
+[ext_resource path="res://backgrounds/tutorial.png" type="Texture" id=1]
 [ext_resource path="res://entities/menu_button.tscn" type="PackedScene" id=2]
 
-[node name="Menu" type="Node2D"]
+[node name="Tutorial" type="Node2D"]
 
 [node name="Sprite" type="Sprite" parent="."]
 texture = ExtResource( 1 )
 centered = false
 
 [node name="MenuButton" parent="." instance=ExtResource( 2 )]
-position = Vector2( 171, 485 )
-scene_to = "res://levels/tutorial.tscn"
+position = Vector2( 794, 487 )
+scene_to = "res://levels/main.tscn"

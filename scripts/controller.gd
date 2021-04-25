@@ -8,7 +8,8 @@ onready var board : ChessBoard = get_tree().get_root().find_node("ChessBoard", t
 onready var pawns := get_tree().get_root().find_node("Pawns", true, false)
 onready var buttons := get_tree().get_root().find_node("Buttons", true, false)
 
-const TIME_PER_PHASE := 0.4
+const TIME_PER_PHASE := 0.2
+const GAME_OVER_TIME := 2.0
 
 var phase_timer := 0.0
 
@@ -20,6 +21,10 @@ func _ready() -> void:
 func _process(delta : float) -> void:
 	if LogicManager.phase == Phases.PRE_GAME: 
 		LogicManager.increment_phase()
+	elif LogicManager.phase == Phases.GAME_OVER:
+		phase_timer += delta
+		if phase_timer > GAME_OVER_TIME:
+			get_tree().change_scene("res://levels/gameover.tscn")
 	elif LogicManager.phase != Phases.PLAYER_MOVE:
 		phase_timer += delta
 		if phase_timer > TIME_PER_PHASE:
