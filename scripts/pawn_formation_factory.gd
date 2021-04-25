@@ -15,6 +15,25 @@ const UHOH = [[0,1,0,1,0,1],[1,0,1,0,1,0]]
 
 const ALL_BAG = [SINGLE,H_PAIR,D_PAIR1,D_PAIR2,V,EYES,INVERT_V,UHOH]
 
+const LEVEL = {
+	0: {
+		'bag': [SINGLE],
+		'time_between_new': 2
+	},
+	1: {
+		'bag': [SINGLE, H_PAIR, D_PAIR1, D_PAIR2, EYES],
+		'time_between_new': 3
+	},
+	2: {
+		'bag': [V, INVERT_V],
+		'time_between_new': 5
+	},
+	3: {
+		'bag': [UHOH],
+		'time_between_new': 7
+	}
+}
+
 var spawn_row   # pieces always spawn at this row or above (never below)
 var row_width
 
@@ -23,7 +42,10 @@ func _init(spawn_row_ : int, row_width_ : int) -> void:
 	self.row_width = row_width_
 
 func generate(level: int, turn: int) -> Array:
-	return _prep_formation(ALL_BAG[randi() %  ALL_BAG.size()])
+	var lvl = LEVEL[level % LEVEL.size()]
+	if turn % lvl.time_between_new == 0:
+		return _prep_formation(lvl.bag[randi() %  lvl.bag.size()])
+	return []
 	
 func _prep_formation(template: Array) -> Array:
 	var positions = []

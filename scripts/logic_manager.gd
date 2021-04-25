@@ -18,6 +18,8 @@ var player : PieceLogic
 var pieces  # dictionary whose keys are piece ids
 var board : Array # 2D array, with piece IDs in occupied spaces, null if empty
 var formation_factory : PawnFormationFactory
+var button_ids : Array
+var buttons #dictionary whose keys are button ids
 
 signal spawn_enemy(id, pos) # int and IntVec2
 signal move_enemy(id, new_pos) # int and IntVec2
@@ -27,6 +29,9 @@ signal move_draw(type, slot, new_next_type) # MoveType and int and MoveType
 signal phase_change(new_phase) # Phases
 signal on_damage(id, pos, life_remaining) # int id of the enemy that attacked, IntVec2 of pos, int
 signal on_death(id, pos) # int if of the enemy that attacked, IntVec2 of pos
+signal on_level_up(new_level) # int
+signal on_button_press(id) # int id of the button
+signal on_button_create(id, pos) # int id of the new button, IntVec2 of its position
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -37,7 +42,7 @@ func reset():
 	# Variables
 	next_object_id = 1
 	phase = Phases.PRE_GAME
-	level  = 1
+	level  = 3
 	turn  = 0
 	moves = [MoveType.GOOD_PAWN, MoveType.GOOD_PAWN, MoveType.GOOD_PAWN]
 	next_move = MoveType.GOOD_PAWN
@@ -55,6 +60,8 @@ func reset():
 	}
 	board = [] # 2D array, with piece IDs in occupied spaces, null if empty
 	formation_factory = PawnFormationFactory.new(HEIGHT - SPAWN_ROWS - 1, WIDTH)
+	button_ids = []
+	buttons = {}
 	
 	# Init the moves
 	var starting_moves = [
@@ -139,7 +146,6 @@ func try_player_move(slot: int, pos: IntVec2) -> bool:
 			return true
 	return false
 
-
 # Returns a random MoveType for the player
 func get_random_player_move() -> int:
 	var bucket = [
@@ -163,7 +169,6 @@ func kill_enemy_piece(id : int, emit : bool = true):
 		pieces.erase(id)
 		if emit:
 			emit_signal("enemy_death", id, pos)
-
 
 # Returns an array of IntVec2, representing all legal moves. 
 # Currently, "not moving" is always a legal move
@@ -374,22 +379,19 @@ func move_enemy(piece: PieceLogic, new_pos: IntVec2):
 		emit_signal("on_death", piece.id, piece.pos)
 		phase = Phases.GAME_OVER
 		emit_signal("phase_change", phase)
-		
 
 func spawn_enemies():
-	if turn % 3 == 0:
-		var positions = formation_factory.generate(level, turn)
-		for pos in positions:
-			if (is_on_board_and_empty(pos)):
-				var pawn = PieceLogic.new({
-					'id': get_next_id(),
-					'is_player': false,
-					'pos': pos,
-					'type': MoveType.BAD_PAWN
-				})
-				board[pawn.pos.x][pawn.pos.y] = pawn.id
-				enemy_ids.push_back(pawn.id)
-				pieces[pawn.id] = pawn
-				if pos.y <= HEIGHT - SPAWN_ROWS:
-					emit_signal("spawn_enemy", pawn.id, pawn.pos) 
-
+	var positions = formation_factory.generate(level, turn)
+	for pos in positions:
+		if (is_on_board_and_empty(pos)):
+			var pawn = PieceLogic.new({
+				'id': get_next_id(),
+				'is_player': false,
+				'pos': pos,
+				'type': MoveType.BAD_PAWN
+			})
+			board[pawn.pos.x][pawn.pos.y] = pawn.id
+			enemy_ids.push_back(pawn.id)
+			pieces[pawn.id] = pawn
+			if pos.y <= HEIGHT - SPAWN_ROWS:
+				emit_signal("spawn_enemy", pawn.id, pawn.pos) 
