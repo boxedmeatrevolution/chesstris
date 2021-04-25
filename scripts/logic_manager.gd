@@ -6,11 +6,12 @@ const SPAWN_ROWS : int = 3 # top 3 rows are for spawning pieces
 var in_corners = [IntVec2.new(1,1), IntVec2.new(1,4), IntVec2.new(4,1), IntVec2.new(4,4)]
 var corners = [IntVec2.new(0,0), IntVec2.new(0,5), IntVec2.new(5,0), IntVec2.new(5,5)]
 var offset_corners = [IntVec2.new(0,1), IntVec2.new(1,5), IntVec2.new(5,4), IntVec2.new(4,0)]
+var offset_corners2 = [IntVec2.new(1,0), IntVec2.new(5,1), IntVec2.new(4,5), IntVec2.new(0,4)]
 var button_positions = { # button positions for each level
 	0: offset_corners,
-	1: offset_corners,
+	1: offset_corners2,
 	2: offset_corners,
-	3: offset_corners,
+	3: offset_corners2,
 	4: offset_corners
 }
 
@@ -394,16 +395,11 @@ func move_pawns():
 			pawns.push_back(piece)
 	pawns.sort_custom(PieceSorter, "sort_bottom_to_top")
 	for pawn in pawns:
-		print(board)
-		print(pawn)
 		var moves = get_legal_moves(pawn.pos, MoveType.BAD_PAWN, false)
-		print(moves)
 		var best_move = moves.pop_back()
-		var is_capture = false 
 		for move in moves:
 			if board[move.x][move.y] == player_id:
 				best_move = move
-				is_capture = true
 				break
 			elif move.y < best_move.y:
 				best_move = move #prefer moving down to staying still
@@ -418,24 +414,26 @@ func move_pawns():
 func move_enemy(piece: PieceLogic, new_pos: IntVec2):
 	var starts_off_board = piece.pos.y > HEIGHT - SPAWN_ROWS
 	board[piece.pos.x][piece.pos.y] = null
-	piece.pos.x = new_pos.x
-	piece.pos.y = new_pos.y
-	var is_capture = piece.pos.equals(player.pos)
+	var is_capture = new_pos.equals(player.pos)
 	if starts_off_board && new_pos.y <= HEIGHT - SPAWN_ROWS:
+		piece.pos.x = new_pos.x
+		piece.pos.y = new_pos.y
 		board[piece.pos.x][piece.pos.y] = piece.id
 		emit_signal("spawn_enemy", piece.id, piece.pos)
 	if not is_capture:
+		piece.pos.x = new_pos.x
+		piece.pos.y = new_pos.y
 		board[piece.pos.x][piece.pos.y] = piece.id
 		emit_signal("move_enemy", piece.id, piece.pos)
 	elif lives > 1:
 		lives = lives - 1
-		emit_signal("move_enemy", piece.id, piece.pos)
-		emit_signal("on_damage", piece.id, piece.pos, lives)
+		emit_signal("move_enemy", piece.id, new_pos)
+		emit_signal("on_damage", piece.id, new_pos, lives)
 		kill_enemy_piece(piece.id, false)
 	else:
-		emit_signal("move_enemy", piece.id, piece.pos)
+		emit_signal("move_enemy", piece.id, new_pos)
 		lives = 0
-		emit_signal("on_damage", piece.id, piece.pos, lives)
+		emit_signal("on_damage", piece.id, new_pos, lives)
 		emit_signal("on_death")
 		phase = Phases.GAME_OVER
 		emit_signal("phase_change", phase)
