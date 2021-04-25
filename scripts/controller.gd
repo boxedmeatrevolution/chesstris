@@ -14,6 +14,7 @@ var phase_timer := 0.0
 
 func _ready() -> void:
 	LogicManager.connect("spawn_enemy", self, "_logic_spawn")
+	LogicManager.connect("on_button_create", self, "_logic_create_button")
 	LogicManager.reset()
 
 func _process(delta : float) -> void:
