@@ -5,12 +5,13 @@ const HEIGHT : int = 9
 const SPAWN_ROWS : int = 3 # top 3 rows are for spawning pieces
 var in_corners = [IntVec2.new(1,1), IntVec2.new(1,4), IntVec2.new(4,1), IntVec2.new(4,4)]
 var corners = [IntVec2.new(0,0), IntVec2.new(0,5), IntVec2.new(5,0), IntVec2.new(5,5)]
+var offset_corners = [IntVec2.new(0,1), IntVec2.new(1,5), IntVec2.new(5,4), IntVec2.new(4,0)]
 var button_positions = { # button positions for each level
-	0: in_corners,
-	1: corners,
-	2: in_corners,
-	3: corners,
-	4: in_corners
+	0: offset_corners,
+	1: offset_corners,
+	2: offset_corners,
+	3: offset_corners,
+	4: offset_corners
 }
 
 var _next_object_id : int
@@ -53,7 +54,7 @@ func reset():
 	# Variables
 	_next_object_id = 1
 	phase = Phases.PRE_GAME
-	level = 0
+	level = 1
 	turn  = 0
 	moves = [MoveType.GOOD_PAWN, MoveType.GOOD_PAWN, MoveType.GOOD_PAWN]
 	next_move = MoveType.GOOD_PAWN
@@ -393,7 +394,10 @@ func move_pawns():
 			pawns.push_back(piece)
 	pawns.sort_custom(PieceSorter, "sort_bottom_to_top")
 	for pawn in pawns:
+		print(board)
+		print(pawn)
 		var moves = get_legal_moves(pawn.pos, MoveType.BAD_PAWN, false)
+		print(moves)
 		var best_move = moves.pop_back()
 		var is_capture = false 
 		for move in moves:

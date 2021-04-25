@@ -21,7 +21,7 @@ const LEVEL = {
 		'time_between_new': 2
 	},
 	1: {
-		'bag': [SINGLE, H_PAIR, D_PAIR1, D_PAIR2, EYES],
+		'bag': [H_PAIR],#[SINGLE, H_PAIR, D_PAIR1, D_PAIR2, EYES],
 		'time_between_new': 3
 	},
 	2: {
