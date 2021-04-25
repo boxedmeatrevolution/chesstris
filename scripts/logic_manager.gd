@@ -32,6 +32,7 @@ var formation_factory : PawnFormationFactory
 var button_ids : Array
 var buttons #dictionary whose keys are button ids
 var button_map : Array
+var has_been_hit_on_this_turn : bool
 
 signal spawn_enemy(id, pos) # int and IntVec2
 signal move_enemy(id, new_pos) # int and IntVec2
@@ -71,6 +72,7 @@ func reset():
 	pieces = {  # keys are piece ids
 		player_id: player
 	}
+	has_been_hit_on_this_turn = false
 	board = [] # 2D array, with piece IDs in occupied spaces, null if empty
 	formation_factory = PawnFormationFactory.new(HEIGHT - SPAWN_ROWS - 1, WIDTH)
 	init_buttons()
@@ -125,7 +127,7 @@ func increment_phase():
 
 func do_phase():
 	if phase == Phases.PLAYER_MOVE:
-		pass
+		has_been_hit_on_this_turn = false
 	elif phase == Phases.QUEEN_MOVE:
 		move_queens()
 	elif phase == Phases.PAWN_MOVE:
@@ -324,7 +326,7 @@ func is_on_play_area_and_attackable(pos: IntVec2, is_player: bool) -> bool:
 	if is_on_play_area(pos):
 		if board[pos.x][pos.y] == null:
 			return true
-		else:
+		elif is_player || not has_been_hit_on_this_turn: # ensures that player can only be damaged once per turn
 			var attacked_piece_id = board[pos.x][pos.y]
 			var attacked_piece = pieces[attacked_piece_id]
 			if attacked_piece.is_player != is_player:
@@ -426,12 +428,14 @@ func move_enemy(piece: PieceLogic, new_pos: IntVec2):
 		board[piece.pos.x][piece.pos.y] = piece.id
 		emit_signal("move_enemy", piece.id, piece.pos)
 	elif lives > 1:
+		has_been_hit_on_this_turn = true
 		lives = lives - 1
 		emit_signal("move_enemy", piece.id, new_pos)
 		emit_signal("on_damage", piece.id, new_pos, lives)
 		kill_enemy_piece(piece.id, false)
 	else:
 		emit_signal("move_enemy", piece.id, new_pos)
+		has_been_hit_on_this_turn = true		
 		lives = 0
 		emit_signal("on_damage", piece.id, new_pos, lives)
 		emit_signal("on_death")
