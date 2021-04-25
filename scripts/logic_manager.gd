@@ -370,6 +370,7 @@ func move_enemy(piece: PieceLogic, new_pos: IntVec2):
 	else:
 		emit_signal("move_enemy", piece.id, piece.pos)
 		lives = 0
+		emit_signal("on_damage", piece.id, piece.pos, lives)
 		emit_signal("on_death", piece.id, piece.pos)
 		phase = Phases.GAME_OVER
 		emit_signal("phase_change", phase)
