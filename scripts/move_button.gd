@@ -3,6 +3,7 @@ extends Node2D
 const Player := preload("res://scripts/player.gd")
 
 export var index := 0
+var disabled := false
 var active := false
 onready var player : Player = get_tree().get_root().find_node("Player", true, false)
 onready var move_sprite := $MoveSprite
@@ -32,38 +33,50 @@ func _ready() -> void:
 	player.connect("start_select_move_target", self, "_start_select_move_target")
 	player.connect("finish_select_move", self, "_finish_select_move")
 	LogicManager.connect("move_draw", self, "_move_draw")
+	LogicManager.connect("on_damage", self, "_on_damage")
 
 func _move_draw(type : int, slot : int, next_move : int) -> void:
-	if self.index == slot:
-		self.move_sprite.frame = _convert_move_sprite_index(LogicManager.moves[self.index])
-	self.outline_sprite.visible = false
+	if not self.disabled:
+		if self.index == slot:
+			self.move_sprite.frame = _convert_move_sprite_index(LogicManager.moves[self.index])
+		self.outline_sprite.visible = false
 
 func _on_click(obj : Node, event : InputEvent, idx : int) -> void:
 	if event is InputEventMouseButton && event.pressed && event.button_index == BUTTON_LEFT:
-		if self.active:
+		if not disabled && self.active:
 			player.select_move_index(self.index)
 		elif player.state == player.STATE_SELECT_MOVE_TARGET:
 			player.undo_select_move_index()
 
 func _on_mouse_enter() -> void:
-	if self.active:
+	if not self.disabled && self.active:
 		self.outline_sprite.frame = 1
 
 func _on_mouse_leave() -> void:
-	if self.active:
+	if not self.disabled && self.active:
 		self.outline_sprite.frame = 0
 
 func _start_select_move_index() -> void:
-	self.active = true
-	self.outline_sprite.frame = 0
-	self.outline_sprite.visible = true
+	if not self.disabled:
+		self.active = true
+		self.outline_sprite.frame = 0
+		self.outline_sprite.visible = true
 
 func _start_select_move_target(move_index : int) -> void:
-	if self.index == move_index:
-		self.outline_sprite.frame = 2
-	else:
-		self.outline_sprite.visible = false
-	self.active = false
+	if not self.disabled:
+		if self.index == move_index:
+			self.outline_sprite.frame = 2
+		else:
+			self.outline_sprite.visible = false
+		self.active = false
 
 func _finish_select_move() -> void:
-	self.outline_sprite.visible = false
+	if not self.disabled:
+		self.outline_sprite.visible = false
+
+func _on_damage(id, ipos, lives) -> void:
+	if lives <= self.index:
+		self.disabled = true
+		self.active = false
+		self.outline_sprite.visible = false
+		self.move_sprite.frame = 6

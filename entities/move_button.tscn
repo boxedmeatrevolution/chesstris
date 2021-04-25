@@ -12,7 +12,7 @@ script = ExtResource( 3 )
 
 [node name="MoveSprite" type="Sprite" parent="."]
 texture = ExtResource( 1 )
-hframes = 6
+hframes = 7
 
 [node name="OutlineSprite" type="Sprite" parent="."]
 visible = false
