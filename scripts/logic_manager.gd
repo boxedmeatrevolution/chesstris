@@ -39,8 +39,9 @@ var lvl2 = [
 ]
 var lvl3 = [
 	IntVec2.new(0,2), IntVec2.new(1,1), IntVec2.new(1,4), IntVec2.new(2,0),
-	IntVec2.new(2,3), IntVec2.new(2,5), IntVec2.new(3,0), IntVec2.new(3,3),
-	IntVec2.new(3,5), IntVec2.new(4,1), IntVec2.new(4,4), IntVec2.new(5,2)
+	IntVec2.new(2,2), IntVec2.new(2,5), IntVec2.new(3,0), IntVec2.new(3,3),
+	IntVec2.new(3,5), IntVec2.new(4,1), IntVec2.new(4,4), IntVec2.new(5,2),
+	IntVec2.new(0,3), IntVec2.new(5,3)
 ]
 var lvl4 = [
 	IntVec2.new(0,1), IntVec2.new(0,4), IntVec2.new(1,0), IntVec2.new(1,2),
@@ -107,11 +108,11 @@ func _ready():
 	randomize()
 
 # Completely reset EVERYTHING
-func reset():
+func reset(same_level: bool = false):
 	# Variables
 	_next_object_id = 1
-	if phase != Phases.GAME_OVER: # If it was a game over, then we do not reset the level
-		level = 0
+	if phase != Phases.GAME_OVER && not same_level: # If it was a game over, then we do not reset the level
+		level = 2
 	phase = Phases.PRE_GAME
 	turn  = 0
 	moves = [MoveType.GOOD_PAWN, MoveType.GOOD_PAWN, MoveType.GOOD_PAWN]
@@ -232,7 +233,7 @@ func init_buttons():
 	button_ids = []
 	buttons = {}
 	for p in button_positions[level]:
-		if p.equals(player.pos):
+		if p.equals(player.pos) && level == 5:
 			continue
 		var id = get_next_id()
 		button_ids.push_back(id)
