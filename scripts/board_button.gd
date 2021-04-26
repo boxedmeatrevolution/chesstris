@@ -40,6 +40,6 @@ func _start_select_move_target() -> void:
 func _finish_select_move(index : int, target : IntVec2) -> void:
 	if self.ipos.equals(target):
 		death_timer = 0.1
-		outline_sprite.frame = 2
+		outline_sprite.frame = 1
 	else:
 		queue_free()

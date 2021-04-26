@@ -14,14 +14,13 @@ __meta__ = {
 "_edit_group_": true
 }
 
+[node name="OutlineSprite" type="Sprite" parent="."]
+texture = ExtResource( 2 )
+hframes = 2
+
 [node name="MoveSprite" type="Sprite" parent="."]
 texture = ExtResource( 1 )
 hframes = 7
-
-[node name="OutlineSprite" type="Sprite" parent="."]
-visible = false
-texture = ExtResource( 2 )
-hframes = 3
 
 [node name="Area2D" type="Area2D" parent="."]
 

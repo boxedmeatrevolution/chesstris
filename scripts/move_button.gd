@@ -41,7 +41,7 @@ func _move_draw(type : int, slot : int, next_move : int) -> void:
 	if not self.disabled:
 		if self.index == slot:
 			self.move_sprite.frame = _convert_move_sprite_index(LogicManager.moves[self.index])
-		self.outline_sprite.visible = false
+		self.outline_sprite.frame = 0
 
 func _on_click(obj : Node, event : InputEvent, idx : int) -> void:
 	if event is InputEventMouseButton && event.pressed && event.button_index == BUTTON_LEFT:
@@ -65,30 +65,21 @@ func _start_select_move_index() -> void:
 	if not self.disabled:
 		self.active = true
 		self.outline_sprite.frame = 0
-		self.outline_sprite.visible = true
 
 func _start_select_move_target(move_index : int) -> void:
 	if not self.disabled:
 		if self.index == move_index:
-			self.outline_sprite.frame = 2
-		else:
-			self.outline_sprite.visible = false
+			self.outline_sprite.frame = 1
 		self.active = false
-
-func _finish_select_move() -> void:
-	if not self.disabled:
-		self.outline_sprite.visible = false
 
 func _on_damage(id, ipos, lives) -> void:
 	if lives <= self.index:
 		self.disabled = true
 		self.active = false
-		self.outline_sprite.visible = false
 		self.move_sprite.frame = 6
 		
 func _on_life_up(lives) -> void:
 	if lives > self.index:
 		self.disabled = false
 		self.active = true
-		self.outline_sprite.visible
 		self.move_sprite.frame = _convert_move_sprite_index(LogicManager.moves[self.index])
