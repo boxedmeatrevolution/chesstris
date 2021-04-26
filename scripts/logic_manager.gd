@@ -118,7 +118,7 @@ func reset(same_level: bool = false):
 			emit_signal("on_life_up", lives + i + 1)
 	_next_object_id = 1
 	if phase != Phases.GAME_OVER && not same_level: # If it was a game over, then we do not reset the level
-		level = 0
+		level = 4
 	phase = Phases.PRE_GAME
 	turn  = 0
 	moves = [MoveType.GOOD_PAWN, MoveType.GOOD_PAWN, MoveType.GOOD_PAWN]
@@ -581,12 +581,14 @@ func spawn_boss_enemies():
 				'id': get_next_id(),
 				'is_player': false,
 				'pos': IntVec2.new(x,y),
-				'type': MoveType.QUEEN
+				'type': MoveType.BAD_PAWN
 			})
 			board[pawn.pos.x][pawn.pos.y] = pawn.id
 			enemy_ids.push_back(pawn.id)
 			pieces[pawn.id] = pawn
 			emit_signal("spawn_enemy", pawn.id, pawn.pos)
+	for id in enemy_ids:
+		emit_signal("pawn_promotion", id, pieces[id].pos)
 
 func spawn_enemies():
 	print("Spawning enemies. Level %s, Turn %s" % [level, turn])
