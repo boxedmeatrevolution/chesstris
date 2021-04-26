@@ -10,5 +10,5 @@ texture = ExtResource( 1 )
 centered = false
 
 [node name="MenuButton" parent="." instance=ExtResource( 2 )]
-position = Vector2( 794, 487 )
+position = Vector2( 798, 480 )
 scene_to = "res://levels/main.tscn"

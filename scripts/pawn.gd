@@ -11,6 +11,7 @@ const STATE_QUEEN := 1
 
 var idx := 0
 var hurt := false
+var kill := false
 var dying := false
 var state := STATE_PAWN
 var ipos := IntVec2.new(0, 0)
@@ -20,6 +21,7 @@ onready var enemy_death_stream := $EnemyDeathStream
 onready var board : ChessBoard = get_tree().get_root().find_node("ChessBoard", true, false)
 onready var effects : Node2D = get_tree().get_root().find_node("Effects", true, false)
 onready var scene  = get_tree().get_root().find_node("Main", true, false)
+onready var player = get_tree().get_root().find_node("Player", true, false)
 
 func _ready() -> void:
 	self.target_pos = board.get_pos(self.ipos)
@@ -47,7 +49,10 @@ func _process(delta : float) -> void:
 					self.effects.add_child(hurt_flash)
 					hurt_flash.position = self.position
 					scene.on_damage()
-					queue_free()
+					if self.kill:
+						player._on_kill()
+					else:
+						queue_free()
 					
 			else:
 				self.position = self.target_pos + delta_pos * exp(-delta / PLACE_TIME)
@@ -75,3 +80,5 @@ func _logic_on_damage(idx : int, ipos : IntVec2, life : int) -> void:
 	if idx == self.idx:
 		self.target_pos = board.get_pos(ipos)
 		self.hurt = true
+		if life == 0:
+			self.kill = true

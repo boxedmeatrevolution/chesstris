@@ -9,7 +9,7 @@ onready var hellevator = get_tree().get_root().find_node("Hellevator", true, fal
 onready var pawns := get_tree().get_root().find_node("Pawns", true, false)
 onready var buttons := get_tree().get_root().find_node("Buttons", true, false)
 
-const TIME_PER_PHASE := 0.2
+const TIME_PER_PHASE := 0.1
 const GAME_OVER_TIME := 2.0
 const YOU_WIN_TIME := 2.0
 

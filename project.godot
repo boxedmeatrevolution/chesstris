@@ -58,6 +58,7 @@ config/icon="res://icon.png"
 
 LogicManager="*res://scripts/logic_manager.gd"
 MusicController="*res://entities/music_controller.tscn"
+DialogueManager="*res://scripts/dialogue_manager.gd"
 
 [display]
 

@@ -8,7 +8,7 @@ func _area_input(v : Node2D, e : InputEvent, idx : int) -> void:
 		get_tree().change_scene(self.scene_to)
 
 func _mouse_enter() -> void:
-	self.sprite.frame = 1
+	self.sprite.frame = 0
 
 func _mouse_leave() -> void:
-	self.sprite.frame = 0
+	self.sprite.frame = 1

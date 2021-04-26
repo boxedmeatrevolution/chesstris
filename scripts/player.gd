@@ -39,6 +39,9 @@ func _ready() -> void:
 	LogicManager.connect("on_combo", self, "_on_combo")
 
 func _on_death() -> void:
+	pass#self.visible = false
+
+func _on_kill() -> void:
 	self.visible = false
 
 func _on_damage(id, pos, life_remaining) -> void:

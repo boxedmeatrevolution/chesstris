@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://entities/chessboard.tscn" type="PackedScene" id=1]
 [ext_resource path="res://entities/player.tscn" type="PackedScene" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://sprites/next_move.png" type="Texture" id=7]
 [ext_resource path="res://scripts/main_scene.gd" type="Script" id=8]
 [ext_resource path="res://entities/hellevator.tscn" type="PackedScene" id=9]
+[ext_resource path="res://backgrounds/background.png" type="Texture" id=10]
 
 [node name="Main" type="Camera2D"]
 anchor_mode = 0
@@ -16,6 +17,10 @@ current = true
 script = ExtResource( 8 )
 
 [node name="Controller" parent="." instance=ExtResource( 3 )]
+
+[node name="Background" type="Sprite" parent="."]
+texture = ExtResource( 10 )
+centered = false
 
 [node name="ChessBoard" parent="." instance=ExtResource( 1 )]
 position = Vector2( 62, -75 )
