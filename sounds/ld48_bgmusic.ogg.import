@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/ld48_bgmusic.ogg-06231e437b405a32f0795a2fa241438d.oggstr"
+
+[deps]
+
+source_file="res://sounds/ld48_bgmusic.ogg"
+dest_files=[ "res://.import/ld48_bgmusic.ogg-06231e437b405a32f0795a2fa241438d.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0
