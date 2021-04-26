@@ -35,7 +35,7 @@ const LEVEL = {
 	},
 	2: {
 		'bag': [V, INVERT_V, EYES, CLOSE_EYES, LONG_LINE],
-		'time_between_new': 1
+		'time_between_new': 1,
 	},
 	3: {
 		'bag': [TALL, TALL2, QUATRO],
@@ -68,6 +68,9 @@ func generate(level: int, turn: int) -> Array:
 		_turns_until_next_spawn = 0
 	if _turns_until_next_spawn <= 0:
 		var lvl = LEVEL[level]
+		if level == 2:
+			lvl.time_between_new = (lvl.time_between_new + 1) % 2
+		
 		formation = _prep_formation(lvl.bag[randi() %  lvl.bag.size()])
 		_turns_until_next_spawn = formation.size() + lvl.time_between_new
 	else:
