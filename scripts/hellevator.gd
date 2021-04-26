@@ -37,4 +37,5 @@ func _process(delta : float) -> void:
 
 func _open_door() -> void:
 	self.state = STATE_OPEN
-	self.arrive_stream.play()
+	if self.arrive_stream:
+		self.arrive_stream.play()
