@@ -15,6 +15,9 @@ signal start_select_move_index()
 signal start_select_move_target(move_idx)
 signal finish_select_move(move_idx, move_target)
 
+const bonus_sound := preload("res://sounds/bonus_move2.wav")
+const combo_sound := preload("res://sounds/combo.wav")
+
 var target_pos : Vector2
 var state := STATE_WAIT
 var selected_move_index := 0
@@ -25,18 +28,27 @@ onready var board_buttons := get_tree().get_root().find_node("BoardButtons", tru
 onready var move_target_click_stream := $MoveTargetClickStream
 onready var effects := get_tree().get_root().find_node("Effects", true, false)
 onready var combo_stream := $ComboStream
+onready var hurt_stream := $HurtStream
 
 func _ready() -> void:
 	self.target_pos = board.get_pos(LogicManager.player.pos)
 	self.position = self.target_pos
 	LogicManager.connect("phase_change", self, "_phase_change")
+	LogicManager.connect("on_damage", self, "_on_damage")
 	LogicManager.connect("on_death", self, "_on_death")
 	LogicManager.connect("on_combo", self, "_on_combo")
 
 func _on_death() -> void:
 	self.visible = false
 
+func _on_damage(id, pos, life_remaining) -> void:
+	self.hurt_stream.play()
+
 func _on_combo(ipos : IntVec2, count : int) -> void:
+	if count == 1:
+		self.combo_stream.stream = bonus_sound
+	else:
+		self.combo_stream.stream = combo_sound
 	var bonus : Node2D = BonusFlashScene.instance()
 	bonus.position = self.position
 	self.combo_stream.play()
