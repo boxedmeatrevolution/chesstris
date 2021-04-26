@@ -27,7 +27,7 @@ onready var effects := get_tree().get_root().find_node("Effects", true, false)
 
 func _ready() -> void:
 	self.target_pos = board.get_pos(LogicManager.player.pos)
-	self.global_position = self.target_pos
+	self.position = self.target_pos
 	LogicManager.connect("phase_change", self, "_phase_change")
 	LogicManager.connect("on_death", self, "_on_death")
 	LogicManager.connect("on_combo", self, "_on_combo")
@@ -37,7 +37,7 @@ func _on_death() -> void:
 
 func _on_combo(ipos : IntVec2, count : int) -> void:
 	var bonus : Node2D = BonusFlashScene.instance()
-	bonus.position = self.global_position
+	bonus.position = self.position
 	self.effects.add_child(bonus)
 
 func _phase_change(new_phase : int) -> void:
@@ -49,12 +49,12 @@ func _process(delta: float) -> void:
 	if self.state == STATE_WAIT:
 		pass
 	elif self.state == STATE_MAKE_MOVE:
-		if self.target_pos != self.global_position:
-			var delta_pos := self.global_position - self.target_pos
+		if self.target_pos != self.position:
+			var delta_pos := self.position - self.target_pos
 			if delta_pos.length_squared() <= 10:
-				self.global_position = self.target_pos
+				self.position = self.target_pos
 			else:
-				self.global_position = self.target_pos + delta_pos * exp(-delta / PLACE_TIME)
+				self.position = self.target_pos + delta_pos * exp(-delta / PLACE_TIME)
 		else:
 			if not LogicManager.try_player_move(move_index, move_ipos):
 				print("Somehow inputted an invalid move")

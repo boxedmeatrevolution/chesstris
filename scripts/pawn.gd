@@ -22,7 +22,7 @@ onready var effects : Node2D = get_tree().get_root().find_node("Effects", true, 
 
 func _ready() -> void:
 	self.target_pos = board.get_pos(self.ipos)
-	self.global_position = self.target_pos
+	self.position = self.target_pos
 	LogicManager.connect("move_enemy", self, "_logic_move")
 	LogicManager.connect("enemy_death", self, "_logic_death")
 	LogicManager.connect("pawn_promotion", self, "_logic_promotion")
@@ -37,18 +37,18 @@ func _process(delta : float) -> void:
 		if self.position.y > 2000:
 			queue_free()
 	else:
-		if self.target_pos != self.global_position:
-			var delta_pos := self.global_position - self.target_pos
+		if self.target_pos != self.position:
+			var delta_pos := self.position - self.target_pos
 			if delta_pos.length_squared() <= 10:
-				self.global_position = self.target_pos
+				self.position = self.target_pos
 				if self.hurt:
 					var hurt_flash : Node2D = HurtFlashInstance.instance()
 					self.effects.add_child(hurt_flash)
-					hurt_flash.global_position = self.global_position
+					hurt_flash.position = self.position
 					queue_free()
 					
 			else:
-				self.global_position = self.target_pos + delta_pos * exp(-delta / PLACE_TIME)
+				self.position = self.target_pos + delta_pos * exp(-delta / PLACE_TIME)
 
 func _logic_move(idx : int, ipos : IntVec2) -> void:
 	if idx == self.idx:

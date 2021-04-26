@@ -9,7 +9,7 @@ onready var board : ChessBoard = get_tree().get_root().find_node("ChessBoard", t
 onready var outline_sprite := $Sprite
 
 func _ready() -> void:
-	self.global_position = self.board.get_pos(self.ipos)
+	self.position = self.board.get_pos(self.ipos)
 	self.parent.connect("start_select_move_index", self, "_start_select_move_index")
 	self.parent.connect("start_select_move_target", self, "_start_select_move_target")
 	self.parent.connect("finish_select_move", self, "_finish_select_move")

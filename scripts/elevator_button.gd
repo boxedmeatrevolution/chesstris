@@ -9,7 +9,7 @@ onready var sprite := $Sprite
 onready var press_stream := $PressStream
 
 func _ready() -> void:
-	self.global_position = self.board.get_pos(self.ipos)
+	self.position = self.board.get_pos(self.ipos)
 	LogicManager.connect("on_button_press", self, "_on_button_press")
 	LogicManager.connect("on_level_up", self, "_on_level_up")
 
