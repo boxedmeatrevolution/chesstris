@@ -19,6 +19,7 @@ onready var sprite := $Sprite
 onready var enemy_death_stream := $EnemyDeathStream
 onready var board : ChessBoard = get_tree().get_root().find_node("ChessBoard", true, false)
 onready var effects : Node2D = get_tree().get_root().find_node("Effects", true, false)
+onready var scene  = get_tree().get_root().find_node("Main", true, false)
 
 func _ready() -> void:
 	self.target_pos = board.get_pos(self.ipos)
@@ -45,6 +46,7 @@ func _process(delta : float) -> void:
 					var hurt_flash : Node2D = HurtFlashInstance.instance()
 					self.effects.add_child(hurt_flash)
 					hurt_flash.position = self.position
+					scene.on_damage()
 					queue_free()
 					
 			else:
