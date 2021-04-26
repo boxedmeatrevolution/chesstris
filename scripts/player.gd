@@ -24,6 +24,7 @@ onready var board : ChessBoard = get_tree().get_root().find_node("ChessBoard", t
 onready var board_buttons := get_tree().get_root().find_node("BoardButtons", true, false)
 onready var move_target_click_stream := $MoveTargetClickStream
 onready var effects := get_tree().get_root().find_node("Effects", true, false)
+onready var combo_stream := $ComboStream
 
 func _ready() -> void:
 	self.target_pos = board.get_pos(LogicManager.player.pos)
@@ -38,6 +39,7 @@ func _on_death() -> void:
 func _on_combo(ipos : IntVec2, count : int) -> void:
 	var bonus : Node2D = BonusFlashScene.instance()
 	bonus.position = self.position
+	self.combo_stream.play()
 	self.effects.add_child(bonus)
 
 func _phase_change(new_phase : int) -> void:
