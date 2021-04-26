@@ -59,7 +59,10 @@ func _logic_death(idx : int, ipos : IntVec2) -> void:
 		self.dying = true
 		var angle = randf() * 2 * PI
 		self.target_pos = Vector2(cos(angle), sin(angle))
-		self.enemy_death_stream.play()
+		if not LogicManager.should_level_up():
+			# avoid playing the death sound on level up
+			# because if many enemies die at once it can get kinda glitchy
+			self.enemy_death_stream.play()
 
 func _logic_promotion(idx : int, ipos : IntVec2) -> void:
 	if idx == self.idx:

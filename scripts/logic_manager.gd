@@ -62,7 +62,7 @@ var button_positions = { # button positions for each level
 	1: lvl2,
 	2: lvl3,
 	3: lvl4,
-	4: one_butt,
+	4: lvl5,
 	5: lvl6
 }
 
@@ -111,7 +111,7 @@ func reset():
 	# Variables
 	_next_object_id = 1
 	if phase != Phases.GAME_OVER: # If it was a game over, then we do not reset the level
-		level = 4
+		level = 0
 	phase = Phases.PRE_GAME
 	turn  = 0
 	moves = [MoveType.GOOD_PAWN, MoveType.GOOD_PAWN, MoveType.GOOD_PAWN]
