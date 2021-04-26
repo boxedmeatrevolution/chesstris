@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/bonus_move2.wav-a45e7797aed013b1f1258d3f92666183.sample"
+
+[deps]
+
+source_file="res://sounds/bonus_move2.wav"
+dest_files=[ "res://.import/bonus_move2.wav-a45e7797aed013b1f1258d3f92666183.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0
