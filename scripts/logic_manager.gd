@@ -102,6 +102,7 @@ signal on_button_press(id) # int id of the button
 signal on_button_create(id, pos) # int id of the new button, IntVec2 of its position
 signal on_life_up(life_remaining) # int the new number of lives
 signal on_combo(pos, count) # the count is an int of the number of combos so far 
+signal reset_buttons()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -224,6 +225,7 @@ func do_phase():
 		print("Turn %s" % turn)
 
 func init_buttons():
+	emit_signal("reset_buttons")
 	button_map = []
 	for x in range(0, WIDTH):
 		var col = []

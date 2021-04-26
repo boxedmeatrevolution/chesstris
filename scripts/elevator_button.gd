@@ -12,6 +12,7 @@ func _ready() -> void:
 	self.position = self.board.get_pos(self.ipos)
 	LogicManager.connect("on_button_press", self, "_on_button_press")
 	LogicManager.connect("on_level_up", self, "_on_level_up")
+	LogicManager.connect("reset_buttons", self, "_on_reset_buttons")
 
 func _on_button_press(idx : int) -> void:
 	if self.index == idx:
@@ -19,4 +20,7 @@ func _on_button_press(idx : int) -> void:
 		self.press_stream.play()
 
 func _on_level_up(floor_idx : int) -> void:
+	queue_free()
+	
+func _on_reset_buttons() -> void: 
 	queue_free()
