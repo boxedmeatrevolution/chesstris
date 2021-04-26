@@ -88,6 +88,7 @@ var has_been_hit_on_this_turn : bool
 var piece_captured_on_this_turn : bool
 var button_pressed_on_this_turn : bool
 var combo_count : int
+var pos_at_level_start : IntVec2
 
 signal spawn_enemy(id, pos) # int and IntVec2
 signal move_enemy(id, new_pos) # int and IntVec2
@@ -111,6 +112,9 @@ func _ready():
 # Completely reset EVERYTHING
 func reset(same_level: bool = false):
 	# Variables
+	if same_level:
+		for i in range(0, moves.size() - lives - 1):
+			emit_signal("on_life_up", lives + i + 1)
 	_next_object_id = 1
 	if phase != Phases.GAME_OVER && not same_level: # If it was a game over, then we do not reset the level
 		level = 0
@@ -128,6 +132,9 @@ func reset(same_level: bool = false):
 		'pos': IntVec2.new(2,2),
 		'type': MoveType.GOOD_PAWN
 	})
+	if same_level:
+		player.pos = pos_at_level_start
+	pos_at_level_start = player.pos
 	pieces = {  # keys are piece ids
 		player_id: player
 	}
@@ -179,6 +186,7 @@ func increment_phase():
 	elif phase == Phases.PLAYER_MOVE:
 		print(level, turn)
 		if should_level_up():
+			pos_at_level_start = player.pos
 			combo_count = 0
 			if level >= MAX_LEVEL:
 				kill_all_enemies()
