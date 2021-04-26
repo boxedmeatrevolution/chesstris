@@ -59,11 +59,11 @@ var lvl5 = [
 var lvl6 = full_butt
 
 var button_positions = { # button positions for each level
-	0: lvl1,
-	1: lvl2,
-	2: lvl3,
-	3: lvl4,
-	4: lvl5,
+	0: one_butt,
+	1: one_butt,
+	2: one_butt,
+	3: one_butt,
+	4: one_butt,
 	5: lvl6
 }
 
@@ -89,6 +89,7 @@ var piece_captured_on_this_turn : bool
 var button_pressed_on_this_turn : bool
 var combo_count : int
 var pos_at_level_start : IntVec2
+var try_player_move_has_been_called_this_turn : bool
 
 signal spawn_enemy(id, pos) # int and IntVec2
 signal move_enemy(id, new_pos) # int and IntVec2
@@ -141,6 +142,7 @@ func reset(same_level: bool = false):
 	has_been_hit_on_this_turn = false
 	piece_captured_on_this_turn = false
 	button_pressed_on_this_turn = false
+	try_player_move_has_been_called_this_turn = false
 	board = [] # 2D array, with piece IDs in occupied spaces, null if empty
 	formation_factory = PawnFormationFactory.new(HEIGHT - SPAWN_ROWS - 1, WIDTH)
 	
@@ -169,6 +171,8 @@ func reset(same_level: bool = false):
 	if level == 5:
 		spawn_boss_enemies()
 	init_buttons()
+	#if phase != Phases.GAME_OVER && not same_level: # If it was a game over, then we do not reset the level
+	#	emit_signal("on_level_up", level)
 
 # Returns unique ids for pieces 
 func get_next_id():
@@ -184,7 +188,8 @@ func increment_phase():
 	if phase == Phases.PRE_GAME:
 		phase = Phases.PLAYER_MOVE
 	elif phase == Phases.PLAYER_MOVE:
-		print(level, turn)
+		if not try_player_move_has_been_called_this_turn:
+			return
 		if should_level_up():
 			pos_at_level_start = player.pos
 			combo_count = 0
@@ -223,6 +228,7 @@ func do_phase():
 		has_been_hit_on_this_turn = false
 		piece_captured_on_this_turn = false
 		button_pressed_on_this_turn = false
+		try_player_move_has_been_called_this_turn = false
 	elif phase == Phases.QUEEN_MOVE:
 		move_queens()
 	elif phase == Phases.PAWN_MOVE:
@@ -283,6 +289,7 @@ func kill_all_enemies():
 # Returns:
 #   true if the move succeeded, false otherwise 
 func try_player_move(slot: int, pos: IntVec2) -> bool:
+	try_player_move_has_been_called_this_turn = true
 	var type = moves[slot]
 	var legal_player_moves = get_legal_moves(player.pos, type, true)
 	for legal_move in legal_player_moves:
@@ -574,7 +581,7 @@ func spawn_boss_enemies():
 				'id': get_next_id(),
 				'is_player': false,
 				'pos': IntVec2.new(x,y),
-				'type': MoveType.BAD_PAWN
+				'type': MoveType.QUEEN
 			})
 			board[pawn.pos.x][pawn.pos.y] = pawn.id
 			enemy_ids.push_back(pawn.id)
