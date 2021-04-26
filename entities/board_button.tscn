@@ -14,7 +14,7 @@ __meta__ = {
 
 [node name="Sprite" type="Sprite" parent="."]
 texture = ExtResource( 1 )
-hframes = 3
+hframes = 2
 
 [node name="Area2D" type="Area2D" parent="."]
 

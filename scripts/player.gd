@@ -2,6 +2,7 @@ extends Node2D
 
 const ChessBoard := preload("res://scripts/chessboard.gd")
 const BoardButtonScene := preload("res://entities/board_button.tscn")
+const BonusFlashScene := preload("res://entities/bonus_flash.tscn")
 
 const PLACE_TIME := 0.1
 
@@ -22,15 +23,22 @@ var move_ipos := IntVec2.new(0, 0)
 onready var board : ChessBoard = get_tree().get_root().find_node("ChessBoard", true, false)
 onready var board_buttons := get_tree().get_root().find_node("BoardButtons", true, false)
 onready var move_target_click_stream := $MoveTargetClickStream
+onready var effects := get_tree().get_root().find_node("Effects", true, false)
 
 func _ready() -> void:
 	self.target_pos = board.get_pos(LogicManager.player.pos)
 	self.global_position = self.target_pos
 	LogicManager.connect("phase_change", self, "_phase_change")
 	LogicManager.connect("on_death", self, "_on_death")
+	LogicManager.connect("on_combo", self, "_on_combo")
 
 func _on_death() -> void:
 	self.visible = false
+
+func _on_combo(ipos : IntVec2, count : int) -> void:
+	var bonus : Node2D = BonusFlashScene.instance()
+	bonus.position = self.global_position
+	self.effects.add_child(bonus)
 
 func _phase_change(new_phase : int) -> void:
 	if new_phase == Phases.PLAYER_MOVE:
