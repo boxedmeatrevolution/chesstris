@@ -5,6 +5,7 @@ const TILE_HEIGHT := 96
 const NUM_WIDTH := 6
 const NUM_HEIGHT := 7
 
+
 func get_pos(ipos : IntVec2) -> Vector2:
 	if ipos.x < 0 || ipos.x >= NUM_WIDTH || ipos.y < 0 || ipos.y >= NUM_HEIGHT:
 		return Vector2(NAN, NAN)

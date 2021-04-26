@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://entities/chessboard.tscn" type="PackedScene" id=1]
 [ext_resource path="res://entities/player.tscn" type="PackedScene" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://entities/floor_indicator.tscn" type="PackedScene" id=6]
 [ext_resource path="res://sprites/next_move.png" type="Texture" id=7]
 [ext_resource path="res://scripts/main_scene.gd" type="Script" id=8]
+[ext_resource path="res://entities/hellevator.tscn" type="PackedScene" id=9]
 
 [node name="Main" type="Camera2D"]
 anchor_mode = 0
@@ -17,7 +18,7 @@ script = ExtResource( 8 )
 [node name="Controller" parent="." instance=ExtResource( 3 )]
 
 [node name="ChessBoard" parent="." instance=ExtResource( 1 )]
-position = Vector2( 61.4487, -75.033 )
+position = Vector2( 62, -75 )
 
 [node name="BoardButtons" type="Node2D" parent="."]
 
@@ -29,6 +30,9 @@ position = Vector2( 61.4487, -75.033 )
 position = Vector2( 860.677, 142.592 )
 
 [node name="Effects" type="Node2D" parent="."]
+
+[node name="Hellevator" parent="." instance=ExtResource( 9 )]
+position = Vector2( 62, -75 )
 
 [node name="FloorIndicator" parent="." instance=ExtResource( 6 )]
 position = Vector2( 818.164, 174.84 )
