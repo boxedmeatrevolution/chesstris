@@ -5,6 +5,7 @@ const PawnScene := preload("res://entities/pawn.tscn")
 const ElevatorButtonScene := preload("res://entities/elevator_button.tscn")
 
 onready var board : ChessBoard = get_tree().get_root().find_node("ChessBoard", true, false)
+onready var hellevator = get_tree().get_root().find_node("Hellevator", true, false)
 onready var pawns := get_tree().get_root().find_node("Pawns", true, false)
 onready var buttons := get_tree().get_root().find_node("Buttons", true, false)
 
@@ -13,14 +14,24 @@ const GAME_OVER_TIME := 2.0
 const YOU_WIN_TIME := 2.0
 
 var phase_timer := 0.0
+var finishing_level := false
 
 func _ready() -> void:
 	LogicManager.connect("spawn_enemy", self, "_logic_spawn")
 	LogicManager.connect("on_button_create", self, "_logic_create_button")
+	LogicManager.connect("on_level_up", self, "_logic_level_up")
 	LogicManager.reset()
 
+func _logic_level_up(level : int) -> void:
+	hellevator._open_door()
+	self.finishing_level = true
+
 func _process(delta : float) -> void:
-	if LogicManager.phase == Phases.PRE_GAME: 
+	if self.finishing_level:
+		if hellevator.state == hellevator.STATE_WAIT:
+			self.finishing_level = false
+			LogicManager.increment_phase()
+	elif LogicManager.phase == Phases.PRE_GAME: 
 		LogicManager.increment_phase()
 	elif LogicManager.phase == Phases.GAME_OVER:
 		phase_timer += delta

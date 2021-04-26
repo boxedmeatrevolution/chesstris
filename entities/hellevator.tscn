@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://scripts/hellevator.gd" type="Script" id=1]
+[ext_resource path="res://sprites/helevator_door.png" type="Texture" id=2]
+[ext_resource path="res://sprites/pillar.png" type="Texture" id=3]
+[ext_resource path="res://sounds/elevator_ride.wav" type="AudioStream" id=4]
+[ext_resource path="res://sounds/elevator_arrived.wav" type="AudioStream" id=5]
+
+[node name="Hellevator" type="Node2D"]
+script = ExtResource( 1 )
+
+[node name="HellevatorDoor" type="Sprite" parent="."]
+position = Vector2( -12, 92 )
+texture = ExtResource( 2 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 600, 0, 600, 600 )
+
+[node name="LeftPillar" type="Sprite" parent="."]
+position = Vector2( -15, 386 )
+texture = ExtResource( 3 )
+
+[node name="RightPillar" type="Sprite" parent="."]
+position = Vector2( 591, 386 )
+texture = ExtResource( 3 )
+
+[node name="ElevatorArrivedStream" type="AudioStreamPlayer2D" parent="."]
+position = Vector2( 300, 300 )
+stream = ExtResource( 5 )
+bus = "SoundEffects"
+
+[node name="ElevatorRideStream" type="AudioStreamPlayer2D" parent="."]
+position = Vector2( 300, 300 )
+stream = ExtResource( 4 )
+bus = "SoundEffects"
