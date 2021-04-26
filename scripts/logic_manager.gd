@@ -3,7 +3,7 @@ extends Node
 const WIDTH : int = 6
 const HEIGHT : int = 12
 const SPAWN_ROWS : int = 6 # top 6 rows are for spawning pieces
-const MAX_LEVEL : int = 4
+const MAX_LEVEL : int = 5
 const COMBO_ON_CAPTURE : bool = false # player gets to move again after a capture
 const COMBO_ON_BUTTON : bool = false # player gets to move again after a button press
 const COMBO_ON_BUTTON_AND_CAPTURE : bool = true # move again when a piece and button are captured on the same move
@@ -55,13 +55,15 @@ var lvl5 = [
 	IntVec2.new(3,3), IntVec2.new(3,5), IntVec2.new(4,1), IntVec2.new(4,4),
 	IntVec2.new(5,0), IntVec2.new(5,2), IntVec2.new(5,3), IntVec2.new(5,5)
 ]
+var lvl6 = full_butt
 
 var button_positions = { # button positions for each level
 	0: lvl1,
 	1: lvl2,
 	2: lvl3,
 	3: lvl4,
-	4: lvl5
+	4: lvl5,
+	5: lvl6
 }
 
 var _next_object_id : int
@@ -132,7 +134,6 @@ func reset():
 	button_pressed_on_this_turn = false
 	board = [] # 2D array, with piece IDs in occupied spaces, null if empty
 	formation_factory = PawnFormationFactory.new(HEIGHT - SPAWN_ROWS - 1, WIDTH)
-	init_buttons()
 	
 	# Init the moves
 	var starting_moves = [
@@ -155,6 +156,10 @@ func reset():
 		board.push_back(column)
 	# Add player to board
 	board[player.pos.x][player.pos.y] = player_id
+	
+	if level == 5:
+		spawn_boss_enemies()
+	init_buttons()
 
 # Returns unique ids for pieces 
 func get_next_id():
@@ -170,6 +175,7 @@ func increment_phase():
 	if phase == Phases.PRE_GAME:
 		phase = Phases.PLAYER_MOVE
 	elif phase == Phases.PLAYER_MOVE:
+		print(level, turn)
 		if should_level_up():
 			combo_count = 0
 			if level >= MAX_LEVEL:
@@ -226,6 +232,8 @@ func init_buttons():
 	button_ids = []
 	buttons = {}
 	for p in button_positions[level]:
+		if p.equals(player.pos):
+			continue
 		var id = get_next_id()
 		button_ids.push_back(id)
 		buttons[id] = ButtonLogic.new({ 'id': id, 'pos': IntVec2.new(p.x, p.y) })
@@ -248,6 +256,8 @@ func level_up():
 	if lives < moves.size():
 		lives = lives + 1
 		emit_signal("on_life_up", lives)
+	if level == 5:
+		spawn_boss_enemies()
 
 func kill_all_enemies(): 
 	var enemy_ids_copy = enemy_ids.duplicate()
@@ -540,7 +550,26 @@ func move_enemy(piece: PieceLogic, new_pos: IntVec2):
 		phase = Phases.GAME_OVER
 		emit_signal("phase_change", phase)
 
+func spawn_boss_enemies():
+	# BOSS LEVEL!!!!!
+	print("SPAWNING BOSS!!!")
+	for x in range(0, WIDTH):
+		for y in range(0, HEIGHT - SPAWN_ROWS):
+			if x == player.pos.x && y == player.pos.y:
+				continue
+			var pawn = PieceLogic.new({
+				'id': get_next_id(),
+				'is_player': false,
+				'pos': IntVec2.new(x,y),
+				'type': MoveType.BAD_PAWN
+			})
+			board[pawn.pos.x][pawn.pos.y] = pawn.id
+			enemy_ids.push_back(pawn.id)
+			pieces[pawn.id] = pawn
+			emit_signal("spawn_enemy", pawn.id, pawn.pos)
+
 func spawn_enemies():
+	print("Spawning enemies. Level %s, Turn %s" % [level, turn])
 	var positions = formation_factory.generate(level, turn)
 	for pos in positions:
 		if (is_on_board_and_empty(pos)):

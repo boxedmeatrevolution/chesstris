@@ -20,6 +20,7 @@ const LINE = [[1],[1]]
 const LONG_LINE = [[1],[1],[1]]
 const SIXV = [[1,0,0,0,0,1],[0,1,0,0,1,0],[0,0,1,1,0,0]]
 const QUATRO = [[1,0,1],[1,0,1]]
+const FULL_LINE = [[1,1,1,1,1,1]]
 
 const ALL_BAG = [SINGLE,H_PAIR,D_PAIR1,D_PAIR2,V,EYES,INVERT_V,UHOH]
 
@@ -43,6 +44,10 @@ const LEVEL = {
 	4: {
 		'bag': [UHOH, SIXV],
 		'time_between_new': 0
+	},
+	5: {
+		'bag': [FULL_LINE],
+		'time_between_new': -6
 	}
 }
 
