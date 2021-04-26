@@ -30,7 +30,9 @@ func _process(delta : float) -> void:
 	if self.finishing_level:
 		if hellevator.state == hellevator.STATE_WAIT:
 			self.finishing_level = false
-			LogicManager.increment_phase()
+			if !DialogueManager.said_level_dialogue[LogicManager.level]:
+				DialogueManager.said_level_dialogue[LogicManager.level] = true
+				DialogueManager.say_dialogue(DialogueManager.level_dialgoue[LogicManager.level])
 	elif LogicManager.phase == Phases.PRE_GAME: 
 		LogicManager.increment_phase()
 	elif LogicManager.phase == Phases.GAME_OVER:

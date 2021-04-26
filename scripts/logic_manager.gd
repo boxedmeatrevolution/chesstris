@@ -171,8 +171,8 @@ func reset(same_level: bool = false):
 	if level == 5:
 		spawn_boss_enemies()
 	init_buttons()
-	#if phase != Phases.GAME_OVER && not same_level: # If it was a game over, then we do not reset the level
-	#	emit_signal("on_level_up", level)
+	if phase != Phases.GAME_OVER && not same_level: # If it was a game over, then we do not reset the level
+		emit_signal("on_level_up", level)
 
 # Returns unique ids for pieces 
 func get_next_id():

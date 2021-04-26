@@ -4,6 +4,17 @@ const ElevatorOperatorScene := preload("res://entities/elevator_operator.tscn")
 
 var in_dialogue := false
 
+var said_level_dialogue := [false, false, false, false, false, false, false]
+var level_dialgoue := [
+	["Welcome to hell."],
+	["I love saying stuff", "Saying stuff for fun"],
+	["What "],
+	["What 3"],
+	["What in the world"],
+	["Hell"],
+	["Finally done"]
+]
+
 func _ready() -> void:
 	LogicManager.connect("on_level_up", self, "_on_level_up")
 
@@ -17,6 +28,3 @@ func say_dialogue(dialogue : Array) -> void:
 
 func _dialogue_over() -> void:
 	self.in_dialogue = false
-
-func _on_level_up(new_level : int) -> void:
-	self.say_dialogue(["Welcome to level %s." % new_level, "This time I'm sure you will finally lose."])
