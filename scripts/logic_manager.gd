@@ -272,8 +272,10 @@ func kill_all_enemies():
 # Returns:
 #   true if the move succeeded, false otherwise 
 func try_player_move(slot: int, pos: IntVec2) -> bool:
+	print("Trying move", pos)
 	var type = moves[slot]
-	var legal_player_moves = get_legal_moves(pos, type, true)
+	var legal_player_moves = get_legal_moves(player.pos, type, true)
+	print(legal_player_moves)
 	for legal_move in legal_player_moves:
 		if pos.equals(legal_move):
 			# Move the player
@@ -418,6 +420,8 @@ func get_legal_moves(pos: IntVec2, type: int, is_player: bool) -> Array:
 					break
 				else:
 					break
+	if is_player && moves.size() > 1:
+		moves.pop_front()
 	return moves
 
 func is_on_board_and_empty(pos: IntVec2) -> bool:
