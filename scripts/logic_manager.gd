@@ -169,9 +169,6 @@ func reset(same_level: bool = false):
 	board[player.pos.x][player.pos.y] = player_id
 	
 	init_buttons()
-	if level == 5:
-		pass
-		#spawn_boss_enemies()
 	if phase != Phases.GAME_OVER && not same_level: # If it was a game over, then we do not reset the level
 		emit_signal("on_level_up", level)
 
@@ -273,12 +270,9 @@ func level_up():
 	print("Level %s, Turn %s" % [level, turn])
 	emit_signal("on_level_up", level)
 	init_buttons()
-	if lives < moves.size():
+	while lives < moves.size():
 		lives = lives + 1
 		emit_signal("on_life_up", lives)
-	if level == 5:
-		pass
-		#spawn_boss_enemies()
 
 func kill_all_enemies(): 
 	var enemy_ids_copy = enemy_ids.duplicate()
