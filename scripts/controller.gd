@@ -45,7 +45,12 @@ func _process(delta : float) -> void:
 		phase_timer += delta
 		if phase_timer > GAME_OVER_TIME && !losing:
 			losing = true
-			DialogueManager.say_dialogue(["Loser!"])
+			var dialogue := ""
+			if LogicManager.level == 5:
+				dialogue = ["Lowly pawn!", "Filthy pawn!", "I knew you would fall.", "The power of a queen cannot be denied.", "Get this pawn out of here!"][randi() % 5]
+			else:
+				dialogue = ["Pawns must obey.", "Foolish pawn.", "Fall in line.", "You could never have succeeded.", "A pawn is nothing.", "Destined to fail.", "Unworthy of the Queen.", "Obey the Queen."][randi() % 8]
+			DialogueManager.say_dialogue([dialogue], LogicManager.level >= 5)
 	elif LogicManager.phase == Phases.YOU_WIN:
 		phase_timer += delta
 		if phase_timer > YOU_WIN_TIME && !winning:

@@ -24,6 +24,7 @@ texture = ExtResource( 1 )
 hframes = 2
 
 [node name="SpeechSprite" type="Sprite" parent="."]
+visible = false
 position = Vector2( -390.478, 45.0729 )
 texture = ExtResource( 2 )
 

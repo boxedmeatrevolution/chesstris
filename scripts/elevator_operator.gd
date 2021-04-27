@@ -23,6 +23,7 @@ var index := 0
 var frame := 0
 onready var label := $SpeechSprite/Label
 onready var sprite := $Sprite
+onready var speech_sprite := $SpeechSprite
 
 signal done_talking()
 
@@ -42,6 +43,7 @@ func _input(event : InputEvent) -> void:
 			self.label.text = ""
 			if self.index >= self.text.size():
 				self.state = STATE_LEAVING
+				self.speech_sprite.visible = false
 			else:
 				self.state = STATE_SCROLLING
 			self.timer = 0.0
@@ -59,6 +61,7 @@ func _process(delta : float) -> void:
 			self.index = 0
 			self.state = STATE_SCROLLING
 			self.position.y = END_Y
+			self.speech_sprite.visible = true
 	elif self.state == STATE_SCROLLING:
 		self.frame += 1
 		if self.frame == FRAMES_PER_LETTER:
