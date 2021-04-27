@@ -59,10 +59,10 @@ var lvl5 = [
 var lvl6 = full_butt
 
 var button_positions = { # button positions for each level
-	0: one_butt,
-	1: one_butt,
-	2: one_butt,
-	3: one_butt,
+	0: lvl1,
+	1: lvl2,
+	2: lvl3,
+	3: lvl4,
 	4: one_butt,
 	5: lvl6
 }
@@ -118,7 +118,7 @@ func reset(same_level: bool = false):
 			emit_signal("on_life_up", lives + i + 1)
 	_next_object_id = 1
 	if phase != Phases.GAME_OVER && not same_level: # If it was a game over, then we do not reset the level
-		level = 0
+		level = 4
 	phase = Phases.PRE_GAME
 	turn  = 0
 	moves = [MoveType.GOOD_PAWN, MoveType.GOOD_PAWN, MoveType.GOOD_PAWN]
@@ -168,9 +168,10 @@ func reset(same_level: bool = false):
 	# Add player to board
 	board[player.pos.x][player.pos.y] = player_id
 	
-	if level == 5:
-		spawn_boss_enemies()
 	init_buttons()
+	if level == 5:
+		pass
+		#spawn_boss_enemies()
 	if phase != Phases.GAME_OVER && not same_level: # If it was a game over, then we do not reset the level
 		emit_signal("on_level_up", level)
 
@@ -222,6 +223,8 @@ func increment_phase():
 	emit_signal("phase_change", phase)
 	print("The phase is %s" % Phases.string(phase))
 	do_phase()
+	if phase == Phases.PLAYER_MOVE && enemy_ids.size() == 0 && turn == 0 && level == 5:
+		spawn_boss_enemies()
 
 func do_phase():
 	if phase == Phases.PLAYER_MOVE:
@@ -274,7 +277,8 @@ func level_up():
 		lives = lives + 1
 		emit_signal("on_life_up", lives)
 	if level == 5:
-		spawn_boss_enemies()
+		pass
+		#spawn_boss_enemies()
 
 func kill_all_enemies(): 
 	var enemy_ids_copy = enemy_ids.duplicate()
