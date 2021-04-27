@@ -63,7 +63,7 @@ var button_positions = { # button positions for each level
 	1: lvl2,
 	2: lvl3,
 	3: lvl4,
-	4: one_butt,
+	4: lvl5,
 	5: lvl6
 }
 
@@ -118,7 +118,7 @@ func reset(same_level: bool = false):
 			emit_signal("on_life_up", lives + i + 1)
 	_next_object_id = 1
 	if phase != Phases.GAME_OVER && not same_level: # If it was a game over, then we do not reset the level
-		level = 4
+		level = 0
 	phase = Phases.PRE_GAME
 	turn  = 0
 	moves = [MoveType.GOOD_PAWN, MoveType.GOOD_PAWN, MoveType.GOOD_PAWN]
