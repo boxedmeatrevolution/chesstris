@@ -3,6 +3,7 @@ extends Node
 const ElevatorOperatorScene := preload("res://entities/elevator_operator.tscn")
 
 var in_dialogue := false
+var seen_tip := false
 
 var said_level_dialogue := [false, false, false, false, false, false, false]
 var level_dialgoue := [
