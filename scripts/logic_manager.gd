@@ -90,6 +90,7 @@ var button_pressed_on_this_turn : bool
 var combo_count : int
 var pos_at_level_start : IntVec2
 var try_player_move_has_been_called_this_turn : bool
+var death_count : int
 
 signal spawn_enemy(id, pos) # int and IntVec2
 signal move_enemy(id, new_pos) # int and IntVec2
@@ -119,6 +120,7 @@ func reset(same_level: bool = false):
 	_next_object_id = 1
 	if phase != Phases.GAME_OVER && not same_level: # If it was a game over, then we do not reset the level
 		level = 0
+		death_count = 0
 	phase = Phases.PRE_GAME
 	turn  = 0
 	moves = [MoveType.GOOD_PAWN, MoveType.GOOD_PAWN, MoveType.GOOD_PAWN]
@@ -193,6 +195,7 @@ func increment_phase():
 			combo_count = 0
 			if level >= MAX_LEVEL:
 				kill_all_enemies()
+				print("DEATH COUNT: %s" % death_count)
 				phase = Phases.YOU_WIN
 			else:
 				kill_all_enemies()
@@ -566,6 +569,7 @@ func move_enemy(piece: PieceLogic, new_pos: IntVec2):
 		emit_signal("on_damage", piece.id, new_pos, lives)
 		emit_signal("on_death")
 		phase = Phases.GAME_OVER
+		death_count = death_count + 1
 		emit_signal("phase_change", phase)
 
 func spawn_boss_enemies():
