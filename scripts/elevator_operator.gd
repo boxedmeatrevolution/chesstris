@@ -22,6 +22,7 @@ var state := STATE_ARRIVING
 var index := 0
 var frame := 0
 onready var label := $SpeechSprite/Label
+onready var sprite := $Sprite
 
 signal done_talking()
 

@@ -28,35 +28,41 @@ var double_offset_2 = [
 	IntVec2.new(1,0), IntVec2.new(5,1), IntVec2.new(4,5), IntVec2.new(0,4),
 	IntVec2.new(1,2), IntVec2.new(2,4), IntVec2.new(4,3), IntVec2.new(3,1)
 ]
-var lvl1 = [
-	IntVec2.new(0,2), IntVec2.new(0,3), IntVec2.new(2,0), IntVec2.new(3,0),
-	IntVec2.new(2,5), IntVec2.new(3,5), IntVec2.new(5,2), IntVec2.new(5,3)
-]
-var lvl2 = [
-	IntVec2.new(0,0), IntVec2.new(5,0), IntVec2.new(5,5), IntVec2.new(0,5),
-	IntVec2.new(1,2), IntVec2.new(1,3), IntVec2.new(2,1), IntVec2.new(3,1),
-	IntVec2.new(2,4), IntVec2.new(3,4), IntVec2.new(4,2), IntVec2.new(4,3)
-]
-var lvl3 = [
-	IntVec2.new(0,2), IntVec2.new(1,1), IntVec2.new(1,4), IntVec2.new(2,0),
-	IntVec2.new(2,2), IntVec2.new(2,5), IntVec2.new(3,0), IntVec2.new(3,3),
-	IntVec2.new(3,5), IntVec2.new(4,1), IntVec2.new(4,4), IntVec2.new(5,2),
-	IntVec2.new(0,3), IntVec2.new(5,3)
-]
-var lvl4 = [
-	IntVec2.new(0,1), IntVec2.new(0,4), IntVec2.new(1,0), IntVec2.new(1,2),
-	IntVec2.new(1,3), IntVec2.new(1,5), IntVec2.new(2,1), IntVec2.new(2,4),
-	IntVec2.new(3,1), IntVec2.new(3,4), IntVec2.new(4,0), IntVec2.new(4,2),
-	IntVec2.new(4,3), IntVec2.new(4,5), IntVec2.new(5,1), IntVec2.new(5,4)
-]
-var lvl5 = [
-	IntVec2.new(0,0), IntVec2.new(0,2), IntVec2.new(0,3), IntVec2.new(0,5),
-	IntVec2.new(1,1), IntVec2.new(1,4), IntVec2.new(2,0), IntVec2.new(2,2),
-	IntVec2.new(2,3), IntVec2.new(2,5), IntVec2.new(3,0), IntVec2.new(3,2),
-	IntVec2.new(3,3), IntVec2.new(3,5), IntVec2.new(4,1), IntVec2.new(4,4),
-	IntVec2.new(5,0), IntVec2.new(5,2), IntVec2.new(5,3), IntVec2.new(5,5)
-]
-var lvl6 = full_butt
+#var lvl1 = [
+#	IntVec2.new(0,2), IntVec2.new(0,3), IntVec2.new(2,0), IntVec2.new(3,0),
+#	IntVec2.new(2,5), IntVec2.new(3,5), IntVec2.new(5,2), IntVec2.new(5,3)
+#]
+#var lvl2 = [
+#	IntVec2.new(0,0), IntVec2.new(5,0), IntVec2.new(5,5), IntVec2.new(0,5),
+#	IntVec2.new(1,2), IntVec2.new(1,3), IntVec2.new(2,1), IntVec2.new(3,1),
+#	IntVec2.new(2,4), IntVec2.new(3,4), IntVec2.new(4,2), IntVec2.new(4,3)
+#]
+#var lvl3 = [
+#	IntVec2.new(0,2), IntVec2.new(1,1), IntVec2.new(1,4), IntVec2.new(2,0),
+#	IntVec2.new(2,2), IntVec2.new(2,5), IntVec2.new(3,0), IntVec2.new(3,3),
+#	IntVec2.new(3,5), IntVec2.new(4,1), IntVec2.new(4,4), IntVec2.new(5,2),
+#	IntVec2.new(0,3), IntVec2.new(5,3)
+#]
+#var lvl4 = [
+#	IntVec2.new(0,1), IntVec2.new(0,4), IntVec2.new(1,0), IntVec2.new(1,2),
+#	IntVec2.new(1,3), IntVec2.new(1,5), IntVec2.new(2,1), IntVec2.new(2,4),
+#	IntVec2.new(3,1), IntVec2.new(3,4), IntVec2.new(4,0), IntVec2.new(4,2),
+#	IntVec2.new(4,3), IntVec2.new(4,5), IntVec2.new(5,1), IntVec2.new(5,4)
+#]
+#var lvl5 = [
+#	IntVec2.new(0,0), IntVec2.new(0,2), IntVec2.new(0,3), IntVec2.new(0,5),
+#	IntVec2.new(1,1), IntVec2.new(1,4), IntVec2.new(2,0), IntVec2.new(2,2),
+#	IntVec2.new(2,3), IntVec2.new(2,5), IntVec2.new(3,0), IntVec2.new(3,2),
+#	IntVec2.new(3,3), IntVec2.new(3,5), IntVec2.new(4,1), IntVec2.new(4,4),
+#	IntVec2.new(5,0), IntVec2.new(5,2), IntVec2.new(5,3), IntVec2.new(5,5)
+#]
+#var lvl6 = full_butt
+var lvl1 = one_butt
+var lvl2 = one_butt
+var lvl3 = one_butt
+var lvl4 = one_butt
+var lvl5 = one_butt
+var lvl6 = one_butt
 
 var button_positions = { # button positions for each level
 	0: one_butt,

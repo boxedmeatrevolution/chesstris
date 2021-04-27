@@ -21,6 +21,7 @@ __meta__ = {
 [node name="Sprite" type="Sprite" parent="."]
 position = Vector2( 0, 332 )
 texture = ExtResource( 1 )
+hframes = 2
 
 [node name="SpeechSprite" type="Sprite" parent="."]
 position = Vector2( -390.478, 45.0729 )
