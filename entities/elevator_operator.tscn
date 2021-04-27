@@ -28,13 +28,13 @@ position = Vector2( -390.478, 45.0729 )
 texture = ExtResource( 2 )
 
 [node name="Label" type="Label" parent="SpeechSprite"]
-margin_left = -151.0
-margin_top = -136.0
+margin_left = -143.0
+margin_top = -131.0
 margin_right = 149.0
-margin_bottom = 90.0
+margin_bottom = 127.0
 custom_fonts/font = SubResource( 2 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
-text = "You're just another foolish mortal trying to break into Hell before your time. No one enters here until they're good and dead."
+text = "Texty text text text"
 autowrap = true
 __meta__ = {
 "_edit_use_anchors_": false

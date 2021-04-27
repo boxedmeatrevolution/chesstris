@@ -10,7 +10,7 @@ var level_dialgoue := [
 		"So you've got a problem with the rules of chess?",
 		"You think that pawns like you should be able to move willy-nilly where-ever they please?",
 		"Well that's the type of thinking that got you sent here. Hell.",
-		"Pawns should move forward, once square at a time.",
+		"Pawns should move forward, one square at a time.",
 		"If another piece is in the way, they get stuck.",
 		"And they can only attack diagonally, a maximum of one square!",
 		"If you've got a problem with those rules, take it up with the Queen.",
@@ -18,7 +18,8 @@ var level_dialgoue := [
 	],
 	[
 		"You know you're not special. All pieces can break the rules, but the rules are in place for the good of all.",
-		"A pawn like you makes up the front line of attack. Your role is to break the enemy's line of defense with your life.",
+		"A pawn like you makes up the front line of attack.",
+		"Your role is to break the enemy's line of defense with your life.",
 		"Just like my role is to defend the Queen's private elevator."
 	],
 	[
@@ -34,15 +35,20 @@ var level_dialgoue := [
 	[
 		"How can a lowly pawn defy destiny, while the Queen's most distinguished elevator operator cannot?",
 		"Will I be defeated?",
-		"No! I know how every chess piece is permitted to move! I know the strengths and weaknesses of every pawn formation!",
+		"No! I know how every chess piece is permitted to move!",
+		"I know the strengths and weaknesses of every pawn formation!",
 		"Hell-pawns, show this renegade the meaning of true pawn power."
 	],
 	[
 		"Why is my chess game being interupted by this elevator operator and his pawn?",
 		"Throw the elevator operator into the magma pits.",
-		"As for this pawn, I will show it why Queen's have the right to rule."
+		"As for this pawn, I will show it why Queens have the right to rule."
 	],
-	["Finally done"]
+	[
+		"No! My sisters... You killed them all!",
+		"Now you will pay.",
+		"Uh... no... I am slain as well. You win."
+	]
 ]
 
 func _ready() -> void:
